@@ -94,6 +94,14 @@
           <h2>Montería - Córdoba</h2>
           <p>Encuentra negocios, servicios y empresas cerca de ti.</p>
         </div>
+        <!-- Datos opcionales del directorio; si tienes JSON/CSV local, apunta data-src al archivo -->
+        <script
+          id="negocios-data"
+          type="application/json"
+          data-src="negocios.json"
+        >
+          []
+        </script>
         <div class="searchbar" role="search" aria-label="Buscador de negocios">
           <input
             id="q"
@@ -517,6 +525,14 @@
       </section>
       <section id="productos">
         <h2 class="section-title">Productos Destacados</h2>
+        <!-- Datos opcionales de productos. Si tienes una URL CSV/JSON pública, ponla en data-src -->
+        <script
+          id="productos-data"
+          type="application/json"
+          data-src="productos.json"
+        >
+          []
+        </script>
         <div class="grid" id="productos-lista">
           <div class="card">
             <div class="card-header">
@@ -585,6 +601,14 @@
       </section>
       <section id="servicios">
         <h2 class="section-title">Servicios Populares</h2>
+        <!-- Datos opcionales de servicios. Si tienes una URL CSV/JSON pública, ponla en data-src -->
+        <script
+          id="servicios-data"
+          type="application/json"
+          data-src="servicios.json"
+        >
+          []
+        </script>
         <div class="grid" id="servicios-lista">
           <div class="card">
             <div class="card-header">

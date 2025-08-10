@@ -1,0 +1,83 @@
+[
+  {
+    "nombre": "Taller Automotriz Centro Campero",
+    "categoria": "Talleres",
+    "direccion": "CRA 1D #41A-43, Montería - Córdoba",
+    "telefono": "3107211849",
+    "whatsapp": "https://wa.link/abcd12",
+    "url": "servicio-reparacion-pc.html",
+    "icono": "https://cdn-icons-png.flaticon.com/512/679/679720.png"
+  },
+  {
+    "nombre": "Soporte e Instalación de Software",
+    "categoria": "Tecnología",
+    "direccion": "Atención a domicilio - Montería",
+    "telefono": "6047833113",
+    "whatsapp": "https://wa.link/efgh34",
+    "url": "servicio-instalacion-software.html",
+    "icono": "https://cdn-icons-png.flaticon.com/512/2921/2921822.png"
+  },
+  {
+    "nombre": "Hotel San José Plaza",
+    "categoria": "Hoteles",
+    "direccion": "Cra. 1B #38-15, Montería, Córdoba",
+    "telefono": "3126977341",
+    "whatsapp": "https://wa.link/hotel01",
+    "url": "negocio-techzone.html",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3171/3171919.png"
+  },
+  {
+    "nombre": "Restaurante El Bocachico Sinuano",
+    "categoria": "Restaurantes",
+    "direccion": "Kra 1A con Calle 37 y 38, Montería",
+    "telefono": "3206676675",
+    "whatsapp": "https://wa.link/rest01",
+    "url": "negocio-veterinaria.html",
+    "icono": "https://cdn-icons-png.flaticon.com/512/857/857681.png"
+  },
+  {
+    "nombre": "LubriCAR",
+    "categoria": "Servicios",
+    "direccion": "Calle 39 # 1-23, Montería",
+    "telefono": "6047824646",
+    "whatsapp": "https://wa.link/lub01",
+    "url": "negocio-parrilla.html",
+    "icono": "https://cdn-icons-png.flaticon.com/512/2331/2331970.png"
+  },
+  {
+    "nombre": "JM Construcciones",
+    "categoria": "Construcción",
+    "direccion": "Cra 1B # 43-43 B. Sucre, Montería",
+    "telefono": "3103637477",
+    "whatsapp": "https://wa.link/cons01",
+    "url": "#",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3534/3534067.png"
+  },
+  {
+    "nombre": "TechZone Montería",
+    "categoria": "Tecnología",
+    "direccion": "Cll 36 # 2-15, Montería",
+    "telefono": "3001234567",
+    "whatsapp": "https://wa.link/tech01",
+    "url": "#",
+    "icono": "https://cdn-icons-png.flaticon.com/512/2620/2620469.png"
+  },
+  {
+    "nombre": "Clínica Veterinaria Montería",
+    "categoria": "Servicios",
+    "direccion": "Av. Principal # 45-20, Montería",
+    "telefono": "3112223344",
+    "whatsapp": "https://wa.link/vet01",
+    "url": "#",
+    "icono": "https://cdn-icons-png.flaticon.com/512/616/616408.png"
+  },
+  {
+    "nombre": "La Parrilla del Río",
+    "categoria": "Restaurantes",
+    "direccion": "Malecón del Sinú, Montería",
+    "telefono": "3201112233",
+    "whatsapp": "https://wa.link/rest02",
+    "url": "#",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3595/3595455.png"
+  }
+]

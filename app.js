@@ -1,3 +1,54 @@
+// Parser CSV robusto (comillas, comas y saltos de línea)
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let cur = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cur += c;
+      }
+    } else {
+      if (c === '"') {
+        inQuotes = true;
+      } else if (c === ",") {
+        row.push(cur);
+        cur = "";
+      } else if (c === "\n") {
+        row.push(cur);
+        rows.push(row);
+        row = [];
+        cur = "";
+      } else if (c === "\r") {
+        // ignorar CR
+      } else {
+        cur += c;
+      }
+    }
+  }
+  row.push(cur);
+  rows.push(row);
+  if (!rows.length) return [];
+  const headers = rows[0].map((h) => h.trim().toLowerCase());
+  return rows
+    .slice(1)
+    .filter((r) => r.some((v) => (v || "").trim() !== ""))
+    .map((cols) => {
+      const obj = {};
+      headers.forEach((h, idx) => (obj[h] = (cols[idx] || "").trim()));
+      return obj;
+    });
+}
+
 // Lógica del directorio: búsqueda, categoría y filtros rápidos
 (function () {
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -6,7 +57,7 @@
   const list = $(".business-list");
   if (!list) return; // No hay directorio en esta página
 
-  const cards = $$(".business-card", list);
+  let cards = $$(".business-card", list);
   const q = $("#q");
   const categoria = $("#categoria");
   const dirStatus = $("#dir-status");
@@ -23,6 +74,106 @@
       .trim();
 
   let activeCategory = "";
+
+  // Carga dinámica desde JSON/CSV (data-src) o JSON embebido
+  (async function hydrateFromJsonOrSrc() {
+    const node = document.getElementById("negocios-data");
+    if (!node) return;
+    const src = node.getAttribute("data-src");
+
+    function toBizArray(raw) {
+      if (!Array.isArray(raw)) return [];
+      return raw.map((biz) => ({
+        categoria: biz.categoria || biz.category || "Otros",
+        nombre: biz.nombre || biz.title || "Negocio",
+        icono:
+          biz.icono ||
+          biz.img ||
+          "https://cdn-icons-png.flaticon.com/512/565/565547.png",
+        telefono: biz.telefono || biz.tel || "",
+        direccion: biz.direccion || biz.address || "",
+        whatsapp: biz.whatsapp || biz.wa || "",
+        url: biz.url || biz.info || "#",
+      }));
+    }
+
+    try {
+      let data = [];
+      if (src && src.trim()) {
+        const res = await fetch(src, { cache: "no-store" });
+        const text = await res.text();
+        if (
+          src.endsWith(".csv") ||
+          text.trim().toLowerCase().startsWith("nombre,")
+        ) {
+          const rows = parseCsv(text);
+          data = rows.map((r) => ({
+            nombre: r.nombre,
+            categoria: r.categoria,
+            direccion: r.direccion,
+            telefono: r.telefono,
+            whatsapp: r.whatsapp,
+            url: r.url,
+            icono: r.icono,
+          }));
+        } else {
+          data = JSON.parse(text || "[]");
+        }
+      } else {
+        data = JSON.parse(node.textContent || "[]");
+      }
+
+      const items = toBizArray(data);
+      if (!items.length) return;
+      const frag = document.createDocumentFragment();
+      items.forEach((biz) => {
+        const cat = biz.categoria;
+        const title = biz.nombre;
+        const img = biz.icono;
+        const tel = biz.telefono;
+        const addr = biz.direccion;
+        const wa = biz.whatsapp;
+        const urlInfo = biz.url;
+        const keywords = `${title} ${cat} ${addr} ${tel}`;
+
+        const art = document.createElement("article");
+        art.className = "business-card";
+        art.dataset.category = cat;
+        art.dataset.title = title;
+        art.dataset.keywords = keywords;
+        art.innerHTML = `
+          <img src="${img}" alt="${title}" loading="lazy" decoding="async"/>
+          <div>
+            <div class="biz-header">
+              <h3 class="biz-title">${title}</h3>
+              <span class="pill-cat">${cat}</span>
+            </div>
+            <div class="biz-sub">
+              <span class="biz-rating">★★★★★ <span class="count">4.6</span></span>
+              <span class="open-now">Abierto ahora</span>
+            </div>
+            ${addr ? `<p class="biz-meta">${addr}</p>` : ""}
+            ${tel ? `<p class="biz-meta">Tel: ${tel}</p>` : ""}
+            <div class="biz-actions">
+              ${
+                wa
+                  ? `<a class=\"btn-wa\" href=\"${wa}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
+                  : ""
+              }
+              <a class="btn-info" href="${urlInfo}">Más Información</a>
+            </div>
+          </div>`;
+        frag.appendChild(art);
+      });
+      // Reemplaza los estáticos por los dinámicos (JSON/CSV)
+      list.innerHTML = "";
+      list.appendChild(frag);
+      cards = $$(".business-card", list); // refresca colección
+      applyFilters();
+    } catch (e) {
+      console.warn("No se pudo cargar negocios JSON/CSV", e);
+    }
+  })();
 
   function setActiveCategory(cat) {
     activeCategory = cat || "";
@@ -121,4 +272,100 @@
   } catch (_) {}
 
   applyFilters();
+})();
+
+// Carga dinámica de productos y servicios (fuera del IIFE del directorio)
+(function () {
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+
+  function mapCsv(rows) {
+    return rows.map((r) => ({
+      nombre: r.nombre,
+      precio: r.precio,
+      descripcion: r.descripcion,
+      imagen: r.imagen,
+      url: r.url,
+      tipo: r.tipo || "producto",
+    }));
+  }
+
+  function renderCards(container, items, tipo) {
+    if (!container || !Array.isArray(items) || !items.length) return;
+    const frag = document.createDocumentFragment();
+    items.forEach((it, idx) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const id = idx + 1;
+      const precio = it.precio || "";
+      const desc = it.descripcion || "";
+      const img =
+        it.imagen ||
+        (tipo === "servicio"
+          ? "https://cdn-icons-png.flaticon.com/512/1055/1055679.png"
+          : "https://cdn-icons-png.flaticon.com/512/1055/1055687.png");
+      const href = it.url || "#";
+      const name = it.nombre || (tipo === "servicio" ? "Servicio" : "Producto");
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="chip ${tipo}">${tipo}</span>
+        </div>
+        <img src="${img}" alt="${name}" />
+        <h3>${name}</h3>
+        ${desc ? `<p class="desc">${desc}</p>` : ""}
+        ${
+          precio
+            ? `<p class="precio">Precio: <strong>${precio}</strong></p>`
+            : ""
+        }
+        <div class="card-actions">
+          <button onclick="agregarAlCarrito('${tipo}', ${id})">Agregar</button>
+        </div>
+        <a class="card-link" href="${href}" title="Ver detalle" aria-label="Ver ${name}"></a>
+      `;
+      frag.appendChild(card);
+    });
+    container.innerHTML = "";
+    container.appendChild(frag);
+  }
+
+  async function loadFromScript(scriptId) {
+    const node = document.getElementById(scriptId);
+    if (!node) return [];
+    const src = node.getAttribute("data-src");
+    try {
+      if (src && src.trim()) {
+        const res = await fetch(src, { cache: "no-store" });
+        const text = await res.text();
+        if (
+          src.endsWith(".csv") ||
+          text.trim().toLowerCase().startsWith("nombre,")
+        ) {
+          return mapCsv(parseCsv(text));
+        }
+        return JSON.parse(text);
+      }
+      return JSON.parse(node.textContent || "[]");
+    } catch (_) {
+      return [];
+    }
+  }
+
+  (async function hydrateProductsAndServices() {
+    const productos = await loadFromScript("productos-data");
+    const servicios = await loadFromScript("servicios-data");
+    if (productos && productos.length) {
+      renderCards(
+        document.getElementById("productos-lista"),
+        productos,
+        "producto"
+      );
+    }
+    if (servicios && servicios.length) {
+      renderCards(
+        document.getElementById("servicios-lista"),
+        servicios,
+        "servicio"
+      );
+    }
+  })();
 })();

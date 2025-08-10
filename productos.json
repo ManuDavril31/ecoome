@@ -1,0 +1,23 @@
+[
+  {
+    "nombre": "Laptop",
+    "precio": "$1.200.000",
+    "descripcion": "Portátil 8GB RAM, 512GB SSD, ideal para estudio y trabajo.",
+    "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055687.png",
+    "url": "producto-laptop.html"
+  },
+  {
+    "nombre": "Smartphone",
+    "precio": "$800.000",
+    "descripcion": "Celular gama media con gran cámara y batería.",
+    "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png",
+    "url": "producto-smartphone.html"
+  },
+  {
+    "nombre": "Auriculares",
+    "precio": "$150.000",
+    "descripcion": "Auriculares inalámbricos con cancelación de ruido.",
+    "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055676.png",
+    "url": "producto-auriculares.html"
+  }
+]
