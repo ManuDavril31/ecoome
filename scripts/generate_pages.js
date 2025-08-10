@@ -229,7 +229,7 @@ function mdToHtml(md) {
   return out.join("\n");
 }
 
-function businessTemplate(b, related = []) {
+function businessTemplate(b) {
   const title = `${b.nombre} | ${b.categoria} en Montería`;
   const desc = `${b.nombre} en ${b.categoria}. Dirección: ${
     b.direccion || ""
@@ -252,12 +252,6 @@ function businessTemplate(b, related = []) {
   const seoHtml = b.seo_md
     ? `<section class="seo-content container">${mdToHtml(b.seo_md)}</section>`
     : "";
-  const relatedHtml =
-    Array.isArray(related) && related.length
-      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
-          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
-          .join("")}</ul></section>`
-      : "";
   const ldLocal = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -349,9 +343,6 @@ function businessTemplate(b, related = []) {
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
     </div>
-    <aside class="detail-side">
-      ${relatedHtml}
-    </aside>
   </div>
 </article>
 `;
@@ -367,7 +358,7 @@ function businessTemplate(b, related = []) {
   });
 }
 
-function productTemplate(p, related = []) {
+function productTemplate(p) {
   const title = `${p.nombre} | Producto en Montería`;
   const desc = `${p.nombre}. ${p.descripcion || ""}`;
   const slug = slugify(p.nombre);
@@ -386,12 +377,6 @@ function productTemplate(p, related = []) {
   const seoHtml = p.seo_md
     ? `<section class="seo-content container">${mdToHtml(p.seo_md)}</section>`
     : "";
-  const relatedHtml =
-    Array.isArray(related) && related.length
-      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
-          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
-          .join("")}</ul></section>`
-      : "";
   // Intentar extraer precio numérico y moneda COP
   const priceNum =
     typeof p.precio === "string"
@@ -480,7 +465,6 @@ function productTemplate(p, related = []) {
       <h3 class="section-title">Detalles</h3>
       <dl class="detail-dl">${detailsRows}</dl>
     </div>
-    <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </article>
 `;
@@ -496,7 +480,7 @@ function productTemplate(p, related = []) {
   });
 }
 
-function serviceTemplate(s, related = []) {
+function serviceTemplate(s) {
   const title = `${s.nombre} | Servicio en Montería`;
   const desc = `${s.nombre}. ${s.descripcion || ""}`;
   // Derivar slug desde s.url si existe y apunta a /servicios/<slug>/
@@ -524,12 +508,6 @@ function serviceTemplate(s, related = []) {
   const seoHtml = s.seo_md
     ? `<section class="seo-content container">${mdToHtml(s.seo_md)}</section>`
     : "";
-  const relatedHtml =
-    Array.isArray(related) && related.length
-      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
-          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
-          .join("")}</ul></section>`
-      : "";
   const priceNum =
     typeof s.precio === "string"
       ? s.precio
@@ -618,7 +596,6 @@ function serviceTemplate(s, related = []) {
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
     </div>
-  <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </article>
 `;
@@ -646,21 +623,7 @@ function generateAll() {
     const slug = slugify(b.nombre);
     const dir = path.join(root, "directorio", cat, slug);
     const file = path.join(dir, "index.html");
-    const related = negocios
-      .filter(
-        (x) =>
-          x !== b &&
-          (x.categoria || "").toLowerCase() ===
-            (b.categoria || "").toLowerCase()
-      )
-      .slice(0, 5)
-      .map((x) => ({
-        nombre: x.nombre,
-        url: `/directorio/${slugify(x.categoria || "otros")}/${slugify(
-          x.nombre
-        )}/`,
-      }));
-    writeFileSafe(file, businessTemplate(b, related));
+    writeFileSafe(file, businessTemplate(b));
     urls.push(`${SITE_URL}/directorio/${cat}/${slug}/`);
   }
 
@@ -669,14 +632,7 @@ function generateAll() {
     const slug = slugify(p.nombre);
     const dir = path.join(root, "productos", slug);
     const file = path.join(dir, "index.html");
-    const related = productos
-      .filter((x) => x !== p)
-      .slice(0, 5)
-      .map((x) => ({
-        nombre: x.nombre,
-        url: `/productos/${slugify(x.nombre)}/`,
-      }));
-    writeFileSafe(file, productTemplate(p, related));
+    writeFileSafe(file, productTemplate(p));
     urls.push(`${SITE_URL}/productos/${slug}/`);
   }
 
@@ -694,22 +650,7 @@ function generateAll() {
     }
     const dir = path.join(root, "servicios", slug);
     const file = path.join(dir, "index.html");
-    const related = servicios
-      .filter((x) => x !== s)
-      .slice(0, 5)
-      .map((x) => {
-        let rslug = slugify(x.nombre);
-        if (x.url && typeof x.url === "string") {
-          const idx2 = x.url.indexOf("servicios/");
-          if (idx2 !== -1) {
-            const rest2 = x.url.slice(idx2 + "servicios/".length);
-            const seg2 = rest2.split(/[\/#?]/)[0];
-            if (seg2) rslug = seg2;
-          }
-        }
-        return { nombre: x.nombre, url: `/servicios/${rslug}/` };
-      });
-    writeFileSafe(file, serviceTemplate(s, related));
+    writeFileSafe(file, serviceTemplate(s));
     urls.push(`${SITE_URL}/servicios/${slug}/`);
   }
 

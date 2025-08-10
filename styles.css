@@ -822,13 +822,8 @@ footer {
   grid-template-columns: 1fr;
   gap: 1rem;
 }
-.detail-main,
-.detail-side {
+.detail-main {
   background: #fff;
-}
-.detail-side .card,
-.detail-main .card {
-  box-shadow: var(--shadow-1);
 }
 .detail-figure img {
   width: 100%;
@@ -910,10 +905,6 @@ footer {
   overflow-wrap: anywhere;
 }
 @media (min-width: 768px) {
-  .detail-grid {
-    grid-template-columns: 2fr 1fr;
-    align-items: start;
-  }
   .detail-hero {
     height: 180px;
   }
@@ -960,21 +951,4 @@ footer {
   border-radius: 6px;
 }
 
-/* Relacionados */
-.related {
-  margin-top: 1rem;
-}
-.related-list {
-  list-style: none;
-  padding: 0;
-  margin: 0.25rem 0 0;
-  display: grid;
-  gap: 0.35rem;
-}
-.related-list a {
-  text-decoration: none;
-  color: var(--brand-1);
-}
-.related-list a:hover {
-  text-decoration: underline;
-}
+/* (El bloque de Relacionados se eliminó de los detalles) */
