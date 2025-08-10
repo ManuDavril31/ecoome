@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://monteriavende.com/</loc></url>
-  <url><loc>https://monteriavende.com/index.html</loc></url>
-  <url><loc>https://monteriavende.com/directorio/talleres/taller-automotriz-centro-campero/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/tecnologia/soporte-e-instalacion-de-software/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/hoteles/hotel-san-jose-plaza/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/restaurantes/restaurante-el-bocachico-sinuano/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/servicios/lubricar/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/construccion/jm-construcciones/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/tecnologia/techzone-monteria/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/servicios/clinica-veterinaria-monteria/</loc></url>
-  <url><loc>https://monteriavende.com/directorio/restaurantes/la-parrilla-del-rio/</loc></url>
-  <url><loc>https://monteriavende.com/productos/laptop/</loc></url>
-  <url><loc>https://monteriavende.com/productos/smartphone/</loc></url>
-  <url><loc>https://monteriavende.com/productos/auriculares/</loc></url>
-  <url><loc>https://monteriavende.com/servicios/certificado-tradicion-libertad-monteria/</loc></url>
-  <url><loc>https://monteriavende.com/servicios/reparacion-de-pc/</loc></url>
-  <url><loc>https://monteriavende.com/servicios/instalacion-de-software/</loc></url>
+  <url><loc>http://localhost/</loc></url>
+  <url><loc>http://localhost/index.html</loc></url>
+  <url><loc>http://localhost/directorio/talleres/taller-automotriz-centro-campero/</loc></url>
+  <url><loc>http://localhost/directorio/tecnologia/soporte-e-instalacion-de-software/</loc></url>
+  <url><loc>http://localhost/directorio/hoteles/hotel-san-jose-plaza/</loc></url>
+  <url><loc>http://localhost/directorio/restaurantes/restaurante-el-bocachico-sinuano/</loc></url>
+  <url><loc>http://localhost/directorio/servicios/lubricar/</loc></url>
+  <url><loc>http://localhost/directorio/construccion/jm-construcciones/</loc></url>
+  <url><loc>http://localhost/directorio/tecnologia/techzone-monteria/</loc></url>
+  <url><loc>http://localhost/directorio/servicios/clinica-veterinaria-monteria/</loc></url>
+  <url><loc>http://localhost/directorio/restaurantes/la-parrilla-del-rio/</loc></url>
+  <url><loc>http://localhost/productos/laptop/</loc></url>
+  <url><loc>http://localhost/productos/smartphone/</loc></url>
+  <url><loc>http://localhost/productos/auriculares/</loc></url>
+  <url><loc>http://localhost/servicios/certificado-tradicion-libertad-monteria/</loc></url>
+  <url><loc>http://localhost/servicios/reparacion-de-pc/</loc></url>
+  <url><loc>http://localhost/servicios/instalacion-de-software/</loc></url>
 </urlset>

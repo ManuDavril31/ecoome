@@ -1,111 +1,51 @@
 #!/usr/bin/env node
-/**
- * Genera páginas estáticas en estructura tipo silo a partir de los JSON:
- * - negocios.json → /directorio/<slug>/index.html
- * - productos.json → /productos/<slug>/index.html
- * - servicios.json → /servicios/<slug>/index.html
- *
- * Requisitos: Node.js (sin dependencias externas)
- */
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 
-const root = process.cwd();
-const SITE_URL = process.env.SITE_URL || "https://monteriavende.com";
+// Carpeta raíz (contiene JSON y carpeta de salida)
+const root = path.resolve(__dirname, "..");
+// URL base del sitio
+const SITE_URL = (process.env.SITE_URL || "http://localhost").replace(
+  /\/$/,
+  ""
+);
 
-function readJson(file) {
-  const p = path.join(root, file);
+function slugify(str = "") {
+  return String(str)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+function readJson(fileName) {
+  const p = path.join(root, fileName);
   if (!fs.existsSync(p)) return [];
-  const txt = fs.readFileSync(p, "utf8");
   try {
-    return JSON.parse(txt);
-  } catch {
+    const raw = fs.readFileSync(p, "utf8");
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error("Error leyendo", fileName, e.message);
     return [];
   }
 }
 
-function slugify(str) {
-  return (str || "")
-    .toString()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}+/gu, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "")
-    .slice(0, 80);
-}
-
-function ensureDir(dir) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
 function writeFileSafe(filePath, content) {
-  ensureDir(path.dirname(filePath));
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content, "utf8");
 }
 
-function baseHtml({
-  title,
-  description,
-  body,
-  path: pagePath = "/",
-  extraHead = "",
-  ogType = "website",
-  image = "https://cdn-icons-png.flaticon.com/512/535/535239.png",
-  seoAfterMain = "",
-}) {
-  // Referencia a estilos y scripts del sitio
-  const canonical = `${SITE_URL.replace(/\/$/, "")}${
-    pagePath.startsWith("/") ? pagePath : "/" + pagePath
-  }`;
-  return `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${title}</title>
-<meta name="description" content="${description || ""}">
-<meta name="robots" content="index,follow" />
-<link rel="canonical" href="${canonical}" />
-<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/535/535239.png" />
-<link rel="stylesheet" href="/styles.css" />
-<!-- OpenGraph / Twitter -->
-<meta property="og:type" content="${ogType}" />
-<meta property="og:title" content="${title}" />
-<meta property="og:description" content="${description || ""}" />
-<meta property="og:url" content="${canonical}" />
-<meta property="og:image" content="${image}" />
-<meta property="og:locale" content="es_CO" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="${title}" />
-<meta name="twitter:description" content="${description || ""}" />
-<meta name="twitter:image" content="${image}" />
-${extraHead}
-</head>
-<body>
-<nav style="padding:1rem"><a href="/index.html">Home</a></nav>
-<main class="container" style="max-width:1100px;margin:0 auto;padding:1rem">${body}</main>
-${seoAfterMain}
-<footer style="padding:2rem 1rem;color:#666">© 2025 MONTERIA VENDE</footer>
-<script src="/store.js"></script>
-<script src="/app.js"></script>
-</body>
-</html>`;
-}
-
-// Conversor Markdown básico → HTML (encabezados, listas, enlaces, imágenes, código, tablas)
-function mdToHtml(md) {
-  if (!md || typeof md !== "string") return "";
-  // Escape básico para evitar HTML injection
-  md = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-  // Bloques de código ```
-  let inCode = false;
-  const lines = md.split(/\r?\n/);
+// Conversor Markdown sencillo
+function mdToHtml(md = "") {
+  const lines = String(md).replace(/\r\n?/g, "\n").split("\n");
   const out = [];
-  let listMode = null; // 'ul' | 'ol'
-  let tableMode = false;
-  let tableRows = [];
+  let inCode = false;
+  let listMode = null; // "ul" | "ol"
 
   function flushList() {
     if (listMode) {
@@ -113,35 +53,13 @@ function mdToHtml(md) {
       listMode = null;
     }
   }
-  function flushTable() {
-    if (tableMode && tableRows.length) {
-      const [head, ...rest] = tableRows;
-      out.push('<table class="table">');
-      out.push(
-        "<thead><tr>" +
-          head.map((h) => `<th>${h.trim()}</th>`).join("") +
-          "</tr></thead>"
-      );
-      if (rest.length) {
-        out.push("<tbody>");
-        for (const row of rest)
-          out.push(
-            "<tr>" + row.map((c) => `<td>${c.trim()}</td>`).join("") + "</tr>"
-          );
-        out.push("</tbody>");
-      }
-      out.push("</table>");
-    }
-    tableMode = false;
-    tableRows = [];
-  }
 
   for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
+    const line = lines[i];
+
     if (line.trim().startsWith("```")) {
       if (!inCode) {
         flushList();
-        flushTable();
         inCode = true;
         out.push("<pre><code>");
       } else {
@@ -153,27 +71,6 @@ function mdToHtml(md) {
     if (inCode) {
       out.push(line);
       continue;
-    }
-
-    // Tablas: líneas con |
-    if (line.includes("|") && /\|.*\|/.test(line)) {
-      // detectar separador de tabla (---)
-      const isSep = /^\s*\|?\s*:?-{3,}\s*(\|\s*:?-{3,}\s*)+\|?\s*$/.test(line);
-      if (!tableMode) {
-        flushList();
-        tableMode = true;
-        tableRows = [];
-      }
-      if (!isSep) {
-        const cells = line.split("|");
-        // eliminar celdas vacías de extremos si empiezan/terminan con |
-        if (cells[0].trim() === "") cells.shift();
-        if (cells[cells.length - 1].trim() === "") cells.pop();
-        tableRows.push(cells);
-      }
-      continue;
-    } else if (tableMode) {
-      flushTable();
     }
 
     // Listas
@@ -211,7 +108,7 @@ function mdToHtml(md) {
       continue;
     }
 
-    // Enlaces e imágenes, negritas/itálicas, código inline
+    // Enlaces, imágenes, negritas/itálicas, código inline
     let html = line
       .replace(
         /!\[([^\]]*)\]\(([^)]+)\)/g,
@@ -224,57 +121,114 @@ function mdToHtml(md) {
     if (html.trim() === "") out.push("<br/>");
     else out.push("<p>" + html + "</p>");
   }
+
   flushList();
-  flushTable();
   return out.join("\n");
 }
 
+function baseHtml({
+  title,
+  description,
+  body,
+  seoAfterMain = "",
+  path: pagePath = "/",
+  extraHead = "",
+  ogType = "website",
+  image,
+}) {
+  // Prefijo de rutas para assets (CSS/JS) según la profundidad del path
+  const depth = (pagePath || "/").split("/").filter(Boolean).length;
+  const assetPrefix = depth ? "../".repeat(depth) : "";
+  const canonical =
+    SITE_URL + (pagePath.startsWith("/") ? pagePath : "/" + pagePath);
+  const metaImg = image || "/og-image.png";
+  return `<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${title}</title>
+  <meta name="description" content="${(description || "").replace(
+    /"/g,
+    "&quot;"
+  )}" />
+  <link rel="canonical" href="${canonical}" />
+  <link rel="stylesheet" href="${assetPrefix}styles.css" />
+  <meta property="og:type" content="${ogType}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${(description || "").replace(
+    /"/g,
+    "&quot;"
+  )}" />
+  <meta property="og:url" content="${canonical}" />
+  <meta property="og:image" content="${metaImg}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${(description || "").replace(
+    /"/g,
+    "&quot;"
+  )}" />
+  <meta name="twitter:image" content="${metaImg}" />
+  ${extraHead}
+</head>
+<body>
+  <main class="container">
+    ${body}
+  </main>
+  ${seoAfterMain}
+</body>
+</html>`;
+}
+
 function businessTemplate(b) {
-  const title = `${b.nombre} | ${b.categoria} en Montería`;
-  const desc = `${b.nombre} en ${b.categoria}. Dirección: ${
+  const title = `${b.nombre} | ${b.categoria || "Negocio"} en Montería`;
+  const desc = `${b.nombre} en ${b.categoria || "Negocio"}. Dirección: ${
     b.direccion || ""
   }. Tel: ${b.telefono || ""}.`;
   const catSlug = slugify(b.categoria || "otros");
   const slug = slugify(b.nombre);
   const pagePath = `/directorio/${catSlug}/${slug}/`;
+
   const detailsRows = [
     ["Nombre", b.nombre],
     ["Categoría", b.categoria],
     ["Dirección", b.direccion],
     ["Teléfono", b.telefono],
+    ["Descripción", b.descripcion],
+    ["Sitio", b.url],
     ["WhatsApp", b.whatsapp],
-    ["URL", b.url],
-    ["Icono", b.icono],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
+
   const seoHtml = b.seo_md
     ? `<section class="seo-content container">${mdToHtml(b.seo_md)}</section>`
     : "";
-  const ldLocal = {
+
+  const ldBiz = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: b.nombre,
-    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
-    telephone: b.telefono || undefined,
-    image: b.icono || undefined,
+    description: b.descripcion || undefined,
+    image: b.logo || b.imagen || undefined,
+    url: `${SITE_URL}${pagePath}`,
     address: b.direccion
-      ? {
-          "@type": "PostalAddress",
-          streetAddress: b.direccion,
-          addressLocality: "Montería",
-          addressRegion: "Córdoba",
-          addressCountry: "CO",
-        }
+      ? { "@type": "PostalAddress", streetAddress: b.direccion }
       : undefined,
+    telephone: b.telefono || undefined,
     sameAs: b.whatsapp ? [b.whatsapp] : undefined,
   };
   const ldBreadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: SITE_URL + "/",
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -285,7 +239,7 @@ function businessTemplate(b) {
         "@type": "ListItem",
         position: 3,
         name: b.categoria || "Categoría",
-        item: `${SITE_URL}/directorio/${catSlug}/`,
+        item: `${SITE_URL}/index.html#directorio`,
       },
       {
         "@type": "ListItem",
@@ -296,56 +250,50 @@ function businessTemplate(b) {
     ],
   };
   const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
-    ldLocal
+    ldBiz
   )}</script>\n<script type="application/ld+json">${JSON.stringify(
     ldBreadcrumbs
   )}</script>`;
+
+  const wa =
+    b.whatsapp ||
+    `https://wa.me/573000000000?text=${encodeURIComponent(
+      `Hola, me interesa ${b.nombre}`
+    )}`;
+
   const body = `
 <nav class="breadcrumbs">
-  <a href="/">Inicio</a> / <a href="/index.html#directorio">Directorio</a> / <a href="/directorio/${catSlug}/">${
-    b.categoria
+  <a href="/">Inicio</a> / <a href="/index.html#directorio">Directorio</a> / <a href="/index.html#directorio">${
+    b.categoria || "Categoría"
   }</a> / <span>${b.nombre}</span>
- </nav>
+</nav>
 <article class="detail detail--business">
-      <header class="detail-header">
-        ${
-          b.icono
-            ? `<img class=\"detail-icon\" src=\"${b.icono}\" alt=\"${b.nombre}\" width=\"56\" height=\"56\" loading=\"lazy\" decoding=\"async\">`
-            : ""
-        }
-    <div>
-      <h1 class="detail-title">${b.nombre}</h1>
-      <div class="pill-cat">${b.categoria}</div>
-    </div>
-  </header>
   <div class="detail-grid">
     <div class="detail-main">
-      <div class="detail-meta">
+      <header class="detail-header">
         ${
-          b.direccion
-            ? `<div><strong>Dirección:</strong> ${b.direccion}</div>`
+          b.logo || b.imagen
+            ? `<img class=\"detail-icon\" src=\"${b.logo || b.imagen}\" alt=\"${
+                b.nombre
+              }\" width=\"72\" height=\"72\" loading=\"lazy\" decoding=\"async\">`
             : ""
         }
-        ${
-          b.telefono
-            ? `<div><strong>Teléfono:</strong> ${b.telefono}</div>`
-            : ""
-        }
-      </div>
+        <div>
+          <h1 class="detail-title">${b.nombre}</h1>
+          <div class="pill-cat">${b.categoria || "Negocio"}</div>
+        </div>
+      </header>
+      ${b.descripcion ? `<p>${b.descripcion}</p>` : ""}
       <div class="detail-actions">
-        ${
-          b.whatsapp
-            ? `<a class="btn-primary" href="${b.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
-            : ""
-        }
+        <a class="btn-wa" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
         <a class="btn-info" href="/index.html#directorio">Volver al directorio</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-  <dl class="detail-dl">${detailsRows}</dl>
+      <dl class="detail-dl">${detailsRows}</dl>
     </div>
   </div>
-</article>
-`;
+</article>`;
+
   return baseHtml({
     title,
     description: desc,
@@ -353,8 +301,8 @@ function businessTemplate(b) {
     seoAfterMain: seoHtml,
     path: pagePath,
     extraHead,
-    ogType: "website",
-    image: b.icono || undefined,
+    ogType: "business",
+    image: b.logo || b.imagen || undefined,
   });
 }
 
@@ -363,6 +311,7 @@ function productTemplate(p) {
   const desc = `${p.nombre}. ${p.descripcion || ""}`;
   const slug = slugify(p.nombre);
   const pagePath = `/productos/${slug}/`;
+
   const detailsRows = [
     ["Nombre", p.nombre],
     ["Precio", p.precio],
@@ -374,10 +323,11 @@ function productTemplate(p) {
     .filter(([, v]) => v && String(v).trim() !== "")
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
+
   const seoHtml = p.seo_md
-    ? `<section class="seo-content container">${mdToHtml(p.seo_md)}</section>`
+    ? `<section class=\"seo-content container\">${mdToHtml(p.seo_md)}</section>`
     : "";
-  // Precio numérico para JSON-LD
+
   const priceNum =
     typeof p.precio === "string"
       ? p.precio
@@ -393,7 +343,7 @@ function productTemplate(p) {
     name: p.nombre,
     description: p.descripcion || undefined,
     image: p.imagen || undefined,
-    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
+    url: `${SITE_URL}${pagePath}`,
     offers: price
       ? {
           "@type": "Offer",
@@ -408,7 +358,12 @@ function productTemplate(p) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: SITE_URL + "/",
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -423,48 +378,50 @@ function productTemplate(p) {
       },
     ],
   };
-  const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
+  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
     ldProduct
-  )}</script>\n<script type="application/ld+json">${JSON.stringify(
+  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
     ldBreadcrumbs
   )}</script>`;
+
+  const wa =
+    p.whatsapp ||
+    `https://wa.me/573000000000?text=${encodeURIComponent(
+      `Hola, me interesa el producto ${p.nombre}`
+    )}`;
+
   const body = `
-<nav class="breadcrumbs">
-  <a href="/">Inicio</a> / <a href="/index.html#productos">Productos</a> / <span>${
+<nav class=\"breadcrumbs\">
+  <a href=\"/\">Inicio</a> / <a href=\"/index.html#productos\">Productos</a> / <span>${
     p.nombre
   }</span>
 </nav>
-<article class="detail detail--product">
-  <div class="detail-grid">
-    <div class="detail-main">
-      <header class="detail-header">
+<article class=\"detail detail--product\"> 
+  <div class=\"detail-grid\"> 
+    <div class=\"detail-main\"> 
+      <header class="detail-header"> 
         ${
           p.imagen
             ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="72" height="72" loading="lazy" decoding="async">`
             : ""
         }
         <div>
-          <h1 class="detail-title">${p.nombre}</h1>
-          <div class="pill-cat">Producto</div>
+          <h1 class=\"detail-title\">${p.nombre}</h1>
+          <div class=\"pill-cat\">Producto</div>
         </div>
       </header>
-      ${p.precio ? `<p class="price-lg">${p.precio}</p>` : ""}
+      ${p.precio ? `<p class=\"price-lg\">${p.precio}</p>` : ""}
       ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
-      <div class="detail-actions">
-        ${
-          p.whatsapp
-            ? `<a class="btn-primary" href="${p.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
-            : `<a class=\"btn-primary\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
-                `Hola, me interesa el producto ${p.nombre}`
-              )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
-        }
-        <a class="btn-info" href="/index.html#productos">Volver a productos</a>
+      <div class=\"detail-actions\"> 
+        <a class=\"btn-wa\" href=\"${wa}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>
+        <a class=\"btn-info\" href=\"/index.html#productos\">Volver a productos</a>
       </div>
-      <h3 class="section-title">Detalles</h3>
-      <dl class="detail-dl">${detailsRows}</dl>
+      <h3 class=\"section-title\">Detalles</h3>
+      <dl class=\"detail-dl\">${detailsRows}</dl>
     </div>
   </div>
 </article>`;
+
   return baseHtml({
     title,
     description: desc,
@@ -480,7 +437,6 @@ function productTemplate(p) {
 function serviceTemplate(s) {
   const title = `${s.nombre} | Servicio en Montería`;
   const desc = `${s.nombre}. ${s.descripcion || ""}`;
-  // Derivar slug desde s.url si existe y apunta a /servicios/<slug>/
   let slug = slugify(s.nombre);
   if (s.url && typeof s.url === "string") {
     const idx = s.url.indexOf("servicios/");
@@ -491,6 +447,7 @@ function serviceTemplate(s) {
     }
   }
   const pagePath = `/servicios/${slug}/`;
+
   const detailsRows = [
     ["Nombre", s.nombre],
     ["Precio", s.precio],
@@ -502,9 +459,11 @@ function serviceTemplate(s) {
     .filter(([, v]) => v && String(v).trim() !== "")
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
+
   const seoHtml = s.seo_md
-    ? `<section class="seo-content container">${mdToHtml(s.seo_md)}</section>`
+    ? `<section class=\"seo-content container\">${mdToHtml(s.seo_md)}</section>`
     : "";
+
   const priceNum =
     typeof s.precio === "string"
       ? s.precio
@@ -520,7 +479,7 @@ function serviceTemplate(s) {
     name: s.nombre,
     description: s.descripcion || undefined,
     image: s.imagen || undefined,
-    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
+    url: `${SITE_URL}${pagePath}`,
     offers: price
       ? {
           "@type": "Offer",
@@ -536,7 +495,12 @@ function serviceTemplate(s) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: SITE_URL + "/",
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -551,48 +515,50 @@ function serviceTemplate(s) {
       },
     ],
   };
-  const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
+  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
     ldService
-  )}</script>\n<script type="application/ld+json">${JSON.stringify(
+  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
     ldBreadcrumbs
   )}</script>`;
+
+  const wa =
+    s.whatsapp ||
+    `https://wa.me/573000000000?text=${encodeURIComponent(
+      `Hola, me interesa el servicio ${s.nombre}`
+    )}`;
+
   const body = `
-<nav class="breadcrumbs">
-  <a href="/">Inicio</a> / <a href="/index.html#servicios">Servicios</a> / <span>${
+<nav class=\"breadcrumbs\">
+  <a href=\"/\">Inicio</a> / <a href=\"/index.html#servicios\">Servicios</a> / <span>${
     s.nombre
   }</span>
 </nav>
-<article class="detail detail--service">
-  <div class="detail-grid">
-    <div class="detail-main">
-      <header class="detail-header">
+<article class=\"detail detail--service\"> 
+  <div class=\"detail-grid\"> 
+    <div class=\"detail-main\"> 
+      <header class="detail-header"> 
         ${
           s.imagen
             ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="72" height="72" loading="lazy" decoding="async">`
             : ""
         }
         <div>
-          <h1 class="detail-title">${s.nombre}</h1>
-          <div class="pill-cat">Servicio</div>
+          <h1 class=\"detail-title\">${s.nombre}</h1>
+          <div class=\"pill-cat\">Servicio</div>
         </div>
       </header>
-      ${s.precio ? `<p class="price-lg">${s.precio}</p>` : ""}
+      ${s.precio ? `<p class=\"price-lg\">${s.precio}</p>` : ""}
       ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
-      <div class="detail-actions">
-        ${
-          s.whatsapp
-            ? `<a class="btn-primary" href="${s.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
-            : `<a class=\"btn-primary\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
-                `Hola, me interesa el servicio ${s.nombre}`
-              )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
-        }
-        <a class="btn-info" href="/index.html#servicios">Volver a servicios</a>
+      <div class=\"detail-actions\"> 
+        <a class=\"btn-wa\" href=\"${wa}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>
+        <a class=\"btn-info\" href=\"/index.html#servicios\">Volver a servicios</a>
       </div>
-      <h3 class="section-title">Detalles</h3>
-      <dl class="detail-dl">${detailsRows}</dl>
+      <h3 class=\"section-title\">Detalles</h3>
+      <dl class=\"detail-dl\">${detailsRows}</dl>
     </div>
   </div>
 </article>`;
+
   return baseHtml({
     title,
     description: desc,
@@ -611,7 +577,7 @@ function generateAll() {
   const servicios = readJson("servicios.json");
   const urls = [`${SITE_URL}/`, `${SITE_URL}/index.html`];
 
-  // Directorio por categoría (silo) → /directorio/<categoria>/<slug>/index.html
+  // Directorio por categoría (silo)
   for (const b of negocios) {
     const cat = slugify(b.categoria || "otros");
     const slug = slugify(b.nombre);
@@ -621,7 +587,7 @@ function generateAll() {
     urls.push(`${SITE_URL}/directorio/${cat}/${slug}/`);
   }
 
-  // Productos → /productos/<slug>/index.html
+  // Productos
   for (const p of productos) {
     const slug = slugify(p.nombre);
     const dir = path.join(root, "productos", slug);
@@ -630,9 +596,8 @@ function generateAll() {
     urls.push(`${SITE_URL}/productos/${slug}/`);
   }
 
-  // Servicios → /servicios/<slug>/index.html
+  // Servicios (con posible slug en s.url)
   for (const s of servicios) {
-    // Permitir override de slug desde s.url si apunta a servicios/<slug>
     let slug = slugify(s.nombre);
     if (s.url && typeof s.url === "string") {
       const idx = s.url.indexOf("servicios/");
@@ -650,8 +615,8 @@ function generateAll() {
 
   // sitemap.xml
   const sitemap =
-    `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n` +
+    `<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n` +
     urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n") +
     "\n</urlset>\n";
   writeFileSafe(path.join(root, "sitemap.xml"), sitemap);
