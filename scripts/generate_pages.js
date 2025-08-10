@@ -52,6 +52,7 @@ function baseHtml({
   extraHead = "",
   ogType = "website",
   image = "https://cdn-icons-png.flaticon.com/512/535/535239.png",
+  seoAfterMain = "",
 }) {
   // Referencia a estilos y scripts del sitio
   const canonical = `${SITE_URL.replace(/\/$/, "")}${
@@ -84,6 +85,7 @@ ${extraHead}
 <body>
 <nav style="padding:1rem"><a href="/index.html">Home</a></nav>
 <main class="container" style="max-width:1100px;margin:0 auto;padding:1rem">${body}</main>
+${seoAfterMain}
 <footer style="padding:2rem 1rem;color:#666">© 2025 MONTERIA VENDE</footer>
 <script src="/store.js"></script>
 <script src="/app.js"></script>
@@ -248,7 +250,7 @@ function businessTemplate(b, related = []) {
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
   const seoHtml = b.seo_md
-    ? `<section class="seo-content">${mdToHtml(b.seo_md)}</section>`
+    ? `<section class="seo-content container">${mdToHtml(b.seo_md)}</section>`
     : "";
   const relatedHtml =
     Array.isArray(related) && related.length
@@ -352,12 +354,12 @@ function businessTemplate(b, related = []) {
     </aside>
   </div>
 </article>
-${seoHtml}
 `;
   return baseHtml({
     title,
     description: desc,
     body,
+    seoAfterMain: seoHtml,
     path: pagePath,
     extraHead,
     ogType: "website",
@@ -381,7 +383,7 @@ function productTemplate(p, related = []) {
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
   const seoHtml = p.seo_md
-    ? `<section class="seo-content">${mdToHtml(p.seo_md)}</section>`
+    ? `<section class="seo-content container">${mdToHtml(p.seo_md)}</section>`
     : "";
   const relatedHtml =
     Array.isArray(related) && related.length
@@ -474,12 +476,12 @@ function productTemplate(p, related = []) {
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </article>
-${seoHtml}
 `;
   return baseHtml({
     title,
     description: desc,
     body,
+    seoAfterMain: seoHtml,
     path: pagePath,
     extraHead,
     ogType: "product",
@@ -512,7 +514,7 @@ function serviceTemplate(s, related = []) {
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
     .join("");
   const seoHtml = s.seo_md
-    ? `<section class="seo-content">${mdToHtml(s.seo_md)}</section>`
+    ? `<section class="seo-content container">${mdToHtml(s.seo_md)}</section>`
     : "";
   const relatedHtml =
     Array.isArray(related) && related.length
@@ -605,12 +607,12 @@ function serviceTemplate(s, related = []) {
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </article>
-${seoHtml}
 `;
   return baseHtml({
     title,
     description: desc,
     body,
+    seoAfterMain: seoHtml,
     path: pagePath,
     extraHead,
     ogType: "website",
