@@ -451,7 +451,7 @@ function productTemplate(p, related = []) {
       <header class="detail-header">
         ${
           p.imagen
-            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="56" height="56" loading="lazy" decoding="async">`
+            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="72" height="72" loading="lazy" decoding="async">`
             : ""
         }
         <div>
@@ -459,6 +459,11 @@ function productTemplate(p, related = []) {
           ${p.precio ? `<div class="price-lg">${p.precio}</div>` : ""}
         </div>
       </header>
+      ${
+        p.imagen
+          ? `<figure class="detail-hero"><img src="${p.imagen}" alt="${p.nombre}" loading="lazy" decoding="async"></figure>`
+          : ""
+      }
       ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
       <div class="detail-actions">
         <a class="btn-primary" href="/index.html#productos">Volver a productos</a>
@@ -577,7 +582,7 @@ function serviceTemplate(s, related = []) {
       <header class="detail-header">
         ${
           s.imagen
-            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="56" height="56" loading="lazy" decoding="async">`
+            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="72" height="72" loading="lazy" decoding="async">`
             : ""
         }
         <div>
@@ -585,6 +590,11 @@ function serviceTemplate(s, related = []) {
           ${s.precio ? `<div class="price-lg">${s.precio}</div>` : ""}
         </div>
       </header>
+      ${
+        s.imagen
+          ? `<figure class="detail-hero"><img src="${s.imagen}" alt="${s.nombre}" loading="lazy" decoding="async"></figure>`
+          : ""
+      }
       ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
       <div class="detail-actions">
         <a class="btn-primary" href="/index.html#servicios">Volver a servicios</a>
