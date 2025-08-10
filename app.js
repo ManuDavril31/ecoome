@@ -63,6 +63,19 @@
         parts.push(`para "${q.value.trim()}"`);
       dirStatus.textContent = parts.join(" ");
     }
+
+    // Refleja filtros en la URL para SEO y compartición
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (q && q.value && q.value.trim()) params.set("q", q.value.trim());
+      else params.delete("q");
+      if (activeCategory) params.set("cat", activeCategory);
+      else params.delete("cat");
+      const newUrl = `${window.location.pathname}${
+        params.toString() ? "?" + params.toString() : ""
+      }${window.location.hash || ""}`;
+      window.history.replaceState({}, "", newUrl);
+    } catch (_) {}
   }
 
   // Eventos
@@ -98,7 +111,14 @@
       applyFilters();
     });
 
-  // Inicializa estado y ejecuta primer filtrado
-  setActiveCategory("");
+  // Inicializa desde parámetros de URL si existen
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const qParam = params.get("q") || "";
+    const catParam = params.get("cat") || "";
+    if (q && qParam) q.value = qParam;
+    if (catParam) setActiveCategory(catParam);
+  } catch (_) {}
+
   applyFilters();
 })();
