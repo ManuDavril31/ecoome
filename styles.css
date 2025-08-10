@@ -852,6 +852,16 @@ footer {
   text-decoration: none;
   display: inline-block;
 }
+.btn-info {
+  background: #fff;
+  color: var(--brand-1);
+  border: 2px solid var(--brand-1);
+  padding: 0.55rem 0.9rem;
+  border-radius: 10px;
+  font-weight: 800;
+  text-decoration: none;
+  display: inline-block;
+}
 .btn-primary {
   background: linear-gradient(90deg, var(--brand-1) 60%, var(--brand-2) 100%);
   color: #fff;

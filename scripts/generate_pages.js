@@ -377,7 +377,7 @@ function productTemplate(p) {
   const seoHtml = p.seo_md
     ? `<section class="seo-content container">${mdToHtml(p.seo_md)}</section>`
     : "";
-  // Intentar extraer precio numérico y moneda COP
+  // Precio numérico para JSON-LD
   const priceNum =
     typeof p.precio === "string"
       ? p.precio
@@ -423,9 +423,9 @@ function productTemplate(p) {
       },
     ],
   };
-  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
+  const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
     ldProduct
-  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
+  )}</script>\n<script type="application/ld+json">${JSON.stringify(
     ldBreadcrumbs
   )}</script>`;
   const body = `
@@ -438,36 +438,33 @@ function productTemplate(p) {
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
+        ${
+          p.imagen
+            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="72" height="72" loading="lazy" decoding="async">`
+            : ""
+        }
         <div>
           <h1 class="detail-title">${p.nombre}</h1>
-          <div class="detail-sub">
-            <span class="chip producto">Producto</span>
-            ${p.precio ? `<span class="price-lg">${p.precio}</span>` : ""}
-          </div>
+          <div class="pill-cat">Producto</div>
         </div>
       </header>
-      ${
-        p.imagen
-          ? `<figure class="detail-hero"><img src="${p.imagen}" alt="${p.nombre}" loading="lazy" decoding="async"></figure>`
-          : ""
-      }
+      ${p.precio ? `<p class="price-lg">${p.precio}</p>` : ""}
       ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
       <div class="detail-actions">
         ${
           p.whatsapp
-            ? `<a class="btn-wa" href="${p.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
-            : `<a class=\"btn-wa\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
+            ? `<a class="btn-primary" href="${p.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
+            : `<a class=\"btn-primary\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
                 `Hola, me interesa el producto ${p.nombre}`
               )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
         }
-        <a class="btn-outline" href="/index.html#productos">Volver a productos</a>
+        <a class="btn-info" href="/index.html#productos">Volver a productos</a>
       </div>
       <h3 class="section-title">Detalles</h3>
       <dl class="detail-dl">${detailsRows}</dl>
     </div>
   </div>
-</article>
-`;
+</article>`;
   return baseHtml({
     title,
     description: desc,
@@ -554,9 +551,9 @@ function serviceTemplate(s) {
       },
     ],
   };
-  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
+  const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
     ldService
-  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
+  )}</script>\n<script type="application/ld+json">${JSON.stringify(
     ldBreadcrumbs
   )}</script>`;
   const body = `
@@ -569,36 +566,33 @@ function serviceTemplate(s) {
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
+        ${
+          s.imagen
+            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="72" height="72" loading="lazy" decoding="async">`
+            : ""
+        }
         <div>
           <h1 class="detail-title">${s.nombre}</h1>
-          <div class="detail-sub">
-            <span class="chip servicio">Servicio</span>
-            ${s.precio ? `<span class="price-lg">${s.precio}</span>` : ""}
-          </div>
+          <div class="pill-cat">Servicio</div>
         </div>
       </header>
-      ${
-        s.imagen
-          ? `<figure class="detail-hero"><img src="${s.imagen}" alt="${s.nombre}" loading="lazy" decoding="async"></figure>`
-          : ""
-      }
+      ${s.precio ? `<p class="price-lg">${s.precio}</p>` : ""}
       ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
       <div class="detail-actions">
         ${
           s.whatsapp
-            ? `<a class="btn-wa" href="${s.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
-            : `<a class=\"btn-wa\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
+            ? `<a class="btn-primary" href="${s.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
+            : `<a class=\"btn-primary\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
                 `Hola, me interesa el servicio ${s.nombre}`
               )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
         }
-        <a class="btn-outline" href="/index.html#servicios">Volver a servicios</a>
+        <a class="btn-info" href="/index.html#servicios">Volver a servicios</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-  <dl class="detail-dl">${detailsRows}</dl>
+      <dl class="detail-dl">${detailsRows}</dl>
     </div>
   </div>
-</article>
-`;
+</article>`;
   return baseHtml({
     title,
     description: desc,
