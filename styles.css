@@ -856,6 +856,9 @@ footer {
   padding: 1rem;
   box-shadow: var(--shadow-1);
 }
+.detail + .seo-content {
+  margin-top: 1.5rem; /* separación ampliada entre detalles y bloque SEO */
+}
 .seo-content h1,
 .seo-content h2,
 .seo-content h3 {
