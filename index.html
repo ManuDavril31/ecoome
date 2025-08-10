@@ -670,27 +670,6 @@
               >
             </small>
           </div>
-          <div
-            class="mapa-descargable"
-            aria-label="Mapa de Montería para descargar"
-          >
-            <img
-              src="https://staticmap.openstreetmap.de/staticmap.php?center=8.750,-75.880&zoom=13&size=450x450&markers=8.750,-75.880,red-pushpin"
-              alt="Mapa estático de Montería"
-              loading="lazy"
-              decoding="async"
-            />
-            <p class="caption">
-              Mapa estático de Montería. Fuente: © OpenStreetMap contributors.
-            </p>
-            <a
-              class="btn-download"
-              href="https://staticmap.openstreetmap.de/staticmap.php?center=8.750,-75.880&zoom=13&size=1024x1024&markers=8.750,-75.880,red-pushpin"
-              target="_blank"
-              rel="noopener"
-              >Abrir PNG para guardar</a
-            >
-          </div>
         </div>
         <h3>Datos útiles</h3>
         <ul>
@@ -751,6 +730,59 @@
           atractivos regionales del Caribe, playas y pueblos artesanales del
           departamento.
         </p>
+        <div class="carousel" aria-label="Sitios importantes de Montería">
+          <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+          <div class="carousel-viewport">
+            <div class="carousel-track">
+              <figure class="slide">
+                <img
+                  src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80"
+                  alt="Ronda del Sinú al atardecer (imagen ilustrativa)"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>Ronda del Sinú (ilustrativa)</figcaption>
+              </figure>
+              <figure class="slide">
+                <img
+                  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+                  alt="Senderos y parques (imagen ilustrativa)"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>Senderos y parques (ilustrativa)</figcaption>
+              </figure>
+              <figure class="slide">
+                <img
+                  src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80"
+                  alt="Naturaleza urbana (imagen ilustrativa)"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>Naturaleza urbana (ilustrativa)</figcaption>
+              </figure>
+              <figure class="slide">
+                <img
+                  src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+                  alt="Arquitectura y ciudad (imagen ilustrativa)"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>Arquitectura y ciudad (ilustrativa)</figcaption>
+              </figure>
+              <figure class="slide">
+                <img
+                  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+                  alt="Malecón del Sinú (imagen ilustrativa)"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>Malecón del Sinú (ilustrativa)</figcaption>
+              </figure>
+            </div>
+          </div>
+          <button class="carousel-btn next" aria-label="Siguiente">›</button>
+        </div>
         <h3>Preguntas frecuentes</h3>
         <details>
           <summary>¿Cómo publico mi negocio en MONTERIA VENDE?</summary>
@@ -861,6 +893,40 @@
         /></a>
       </div>
     </footer>
+    <script>
+      (function () {
+        const carousel = document.querySelector(".carousel");
+        if (!carousel) return;
+        const track = carousel.querySelector(".carousel-track");
+        const slides = Array.from(carousel.querySelectorAll(".slide"));
+        const prev = carousel.querySelector(".carousel-btn.prev");
+        const next = carousel.querySelector(".carousel-btn.next");
+        let index = 0;
+        function update() {
+          const offset = -index * 100;
+          track.style.transform = `translateX(${offset}%)`;
+        }
+        function go(n) {
+          index = (n + slides.length) % slides.length;
+          update();
+        }
+        prev && prev.addEventListener("click", () => go(index - 1));
+        next && next.addEventListener("click", () => go(index + 1));
+        // Swipe básico (opcional)
+        let startX = 0;
+        carousel.addEventListener(
+          "touchstart",
+          (e) => (startX = e.touches[0].clientX)
+        );
+        carousel.addEventListener("touchend", (e) => {
+          const dx = e.changedTouches[0].clientX - startX;
+          if (Math.abs(dx) > 40) {
+            go(index + (dx < 0 ? 1 : -1));
+          }
+        });
+        update();
+      })();
+    </script>
     <script src="app.js"></script>
   </body>
 </html>
