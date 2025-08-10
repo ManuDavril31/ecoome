@@ -112,6 +112,16 @@ function businessTemplate(b) {
         }
         <a class="btn-info" href="/index.html#directorio">Volver al directorio</a>
       </div>
+      <h3 class="section-title">Detalles</h3>
+      <dl class="detail-dl">
+        <dt>Nombre</dt><dd>${b.nombre || ""}</dd>
+        <dt>Categoría</dt><dd>${b.categoria || ""}</dd>
+        <dt>Dirección</dt><dd>${b.direccion || ""}</dd>
+        <dt>Teléfono</dt><dd>${b.telefono || ""}</dd>
+        <dt>WhatsApp</dt><dd>${b.whatsapp || ""}</dd>
+        <dt>URL</dt><dd>${b.url || ""}</dd>
+        <dt>Icono</dt><dd>${b.icono || ""}</dd>
+      </dl>
     </div>
     <aside class="detail-side">
       <!-- espacio para info adicional -->
@@ -149,6 +159,14 @@ function productTemplate(p) {
       <div class="detail-actions">
         <a class="btn-primary" href="/index.html#productos">Volver a productos</a>
       </div>
+      <h3 class="section-title">Detalles</h3>
+      <dl class="detail-dl">
+        <dt>Nombre</dt><dd>${p.nombre || ""}</dd>
+        <dt>Precio</dt><dd>${p.precio || ""}</dd>
+        <dt>Descripción</dt><dd>${p.descripcion || ""}</dd>
+        <dt>Imagen</dt><dd>${p.imagen || ""}</dd>
+        <dt>URL</dt><dd>${p.url || ""}</dd>
+      </dl>
     </div>
     <aside class="detail-side"></aside>
   </div>
@@ -184,6 +202,14 @@ function serviceTemplate(s) {
       <div class="detail-actions">
         <a class="btn-primary" href="/index.html#servicios">Volver a servicios</a>
       </div>
+      <h3 class="section-title">Detalles</h3>
+      <dl class="detail-dl">
+        <dt>Nombre</dt><dd>${s.nombre || ""}</dd>
+        <dt>Precio</dt><dd>${s.precio || ""}</dd>
+        <dt>Descripción</dt><dd>${s.descripcion || ""}</dd>
+        <dt>Imagen</dt><dd>${s.imagen || ""}</dd>
+        <dt>URL</dt><dd>${s.url || ""}</dd>
+      </dl>
     </div>
     <aside class="detail-side"></aside>
   </div>

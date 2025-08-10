@@ -823,6 +823,24 @@ footer {
   font-size: 1.15rem;
   margin: 0.25rem 0 0.5rem;
 }
+.detail-dl {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0.35rem 0.75rem;
+  align-items: start;
+  background: #f8faff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+.detail-dl dt {
+  font-weight: 800;
+  color: var(--muted);
+}
+.detail-dl dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 @media (min-width: 768px) {
   .detail-grid {
     grid-template-columns: 2fr 1fr;
