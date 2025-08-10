@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instalación de Software | MONTERIA VENDE</title>
+    <meta
+      name="description"
+      content="Servicio de instalación de software en Montería. Agenda en MONTERIA VENDE."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="hero" style="height: 200px">
+        <img
+          src="https://images.unsplash.com/photo-1515165562835-cf7747c2b6c8?auto=format&fit=crop&w=1200&q=80"
+          class="hero-img"
+          alt="MONTERIA VENDE"
+        />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1>MONTERIA VENDE</h1>
+          <p>Detalle del servicio</p>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html#productos">Productos</a></li>
+          <li><a href="index.html#servicios">Servicios</a></li>
+          <li><a href="index.html#carrito">Carrito</a></li>
+          <li><a href="index.html#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <nav class="breadcrumb">
+        <a href="index.html">Inicio</a> /
+        <a href="index.html#servicios">Servicios</a> /
+        <strong>Instalación de Software</strong>
+      </nav>
+      <h2 class="section-title">Instalación de Software</h2>
+      <section class="detalle" itemscope itemtype="https://schema.org/Service">
+        <meta itemprop="name" content="Instalación de Software" />
+        <div class="detalle-card">
+          <div class="detalle-media">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2329/2329087.png"
+              alt="Instalación de Software"
+              itemprop="image"
+            />
+          </div>
+          <div class="detalle-info">
+            <div class="detalle-meta">
+              <div
+                class="rating"
+                itemprop="aggregateRating"
+                itemscope
+                itemtype="https://schema.org/AggregateRating"
+              >
+                <span class="stars">★★★★★</span>
+                <span class="count"
+                  ><span itemprop="ratingValue">4.8</span> (
+                  <span itemprop="reviewCount">95</span> )</span
+                >
+              </div>
+              <span class="stock">Disponible</span>
+              <span class="sku">SKU: SRV-002</span>
+              <span class="badge-pill">Remoto</span>
+            </div>
+            <div
+              class="price-block"
+              itemprop="offers"
+              itemscope
+              itemtype="https://schema.org/Offer"
+            >
+              <span class="price" itemprop="price" content="100">$100</span>
+              <span class="old">$120</span>
+              <meta itemprop="priceCurrency" content="USD" />
+              <link itemprop="availability" href="https://schema.org/InStock" />
+            </div>
+            <p class="iva">
+              Incluye instalación de software y drivers esenciales. Licencias no
+              incluidas.
+            </p>
+            <p class="desc" itemprop="description">
+              Instalación profesional de aplicaciones y controladores,
+              optimización y verificación de compatibilidad.
+            </p>
+            <div class="detalle-cta">
+              <div class="qty-control">
+                <button
+                  type="button"
+                  aria-label="menos"
+                  onclick="var i=document.getElementById('qty'); i.value=Math.max(1, (+i.value||1)-1)"
+                >
+                  -
+                </button>
+                <input id="qty" type="number" min="1" value="1" />
+                <button
+                  type="button"
+                  aria-label="más"
+                  onclick="var i=document.getElementById('qty'); i.value=(+i.value||1)+1"
+                >
+                  +
+                </button>
+              </div>
+              <button
+                class="btn-main"
+                onclick="(function(){const q=+document.getElementById('qty').value||1;const prev=JSON.parse(localStorage.getItem('mv_carrito')||'[]');const idx=prev.findIndex(it=>it.id===2&&it.tipo==='servicio');if(idx>=0){prev[idx].qty=(prev[idx].qty||1)+q;}else{prev.push({id:2,nombre:'Instalación de Software',precio:100,imagen:'https://cdn-icons-png.flaticon.com/512/2329/2329087.png',tipo:'servicio',qty:q});}localStorage.setItem('mv_carrito',JSON.stringify(prev));alert('Servicio agregado');})()"
+              >
+                Contratar
+              </button>
+              <button class="cta-secondary">Consultar disponibilidad</button>
+            </div>
+            <div class="benefits">
+              <div class="benefit-item">
+                <span class="icon">💻</span> Soporte remoto disponible
+              </div>
+              <div class="benefit-item">
+                <span class="icon">⚙️</span> Configuración óptima
+              </div>
+              <div class="benefit-item">
+                <span class="icon">📦</span> Respaldo y restauración
+              </div>
+            </div>
+            <div class="feature-list">
+              <h4>Incluye</h4>
+              <ul>
+                <li>Instalación de aplicaciones seleccionadas</li>
+                <li>Actualización de drivers</li>
+                <li>Optimización de inicio</li>
+                <li>Pruebas de funcionamiento</li>
+              </ul>
+            </div>
+            <table class="specs" aria-label="Especificaciones del servicio">
+              <tr>
+                <th>Tiempo estimado</th>
+                <td>45–90 minutos</td>
+              </tr>
+              <tr>
+                <th>Modalidad</th>
+                <td>Remota / presencial</td>
+              </tr>
+              <tr>
+                <th>Cobertura</th>
+                <td>Montería y alrededores</td>
+              </tr>
+              <tr>
+                <th>Garantía</th>
+                <td>15 días en instalación</td>
+              </tr>
+            </table>
+            <div class="trust">
+              <div class="trust-item">🛡️ Garantía en instalación</div>
+              <div class="trust-item">💬 Soporte por WhatsApp</div>
+              <div class="trust-item">⭐ 4.8/5 según 90+ reseñas</div>
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Instalación de Software",
+            "image": [
+              "https://cdn-icons-png.flaticon.com/512/2329/2329087.png"
+            ],
+            "description": "Instalación profesional de aplicaciones y controladores, optimización y verificación de compatibilidad.",
+            "areaServed": "Montería",
+            "provider": { "@type": "LocalBusiness", "name": "MONTERIA VENDE" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "95"
+            },
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "USD",
+              "price": "100",
+              "availability": "https://schema.org/InStock"
+            }
+          }
+        </script>
+      </section>
+    </main>
+    <footer><p>&copy; 2025 MONTERIA VENDE</p></footer>
+  </body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MONTERIA VENDE</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="hero">
+        <img
+          src="https://images.unsplash.com/photo-1515165562835-cf7747c2b6c8?auto=format&fit=crop&w=1200&q=80"
+          alt="Montería Vende"
+          class="hero-img"
+        />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1>MONTERIA VENDE</h1>
+          <p>El mejor marketplace de Montería</p>
+          <a href="#productos" class="btn-hero">Ver productos</a>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#directorio">Directorio</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#carrito">Carrito</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section id="directorio">
+        <div class="banner">
+          <h2>Montería - Córdoba</h2>
+          <p>Encuentra negocios, servicios y empresas cerca de ti.</p>
+        </div>
+        <div class="searchbar" role="search" aria-label="Buscador de negocios">
+          <input
+            id="q"
+            type="text"
+            placeholder="¿Qué buscas? (ej. taller, hotel, restaurante)"
+            aria-label="Qué buscas"
+          />
+          <select id="categoria" aria-label="Categoría">
+            <option value="">Todas las categorías</option>
+            <option>Talleres</option>
+            <option>Restaurantes</option>
+            <option>Hoteles</option>
+            <option>Tecnología</option>
+            <option>Servicios</option>
+            <option>Construcción</option>
+          </select>
+          <button id="btn-buscar" type="button">Buscar</button>
+          <button
+            id="btn-limpiar"
+            class="btn-reset"
+            type="button"
+            aria-label="Limpiar filtros"
+          >
+            Limpiar
+          </button>
+        </div>
+        <div class="filters" aria-label="Filtros rápidos">
+          <span class="pill" data-filter="Talleres">Talleres</span>
+          <span class="pill" data-filter="Restaurantes">Restaurantes</span>
+          <span class="pill" data-filter="Hoteles">Hoteles</span>
+          <span class="pill" data-filter="Tecnología">Tecnología</span>
+          <span class="pill" data-filter="Servicios">Servicios</span>
+          <span class="pill" data-filter="Construcción">Construcción</span>
+        </div>
+        <div
+          id="dir-status"
+          class="dir-status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+        <div class="business-list">
+          <article
+            class="business-card"
+            data-category="Talleres"
+            data-title="Taller Automotriz Centro Campero"
+            data-keywords="taller automotriz centro campero cra 1d #41a-43 montería cordoba 3107211849"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/679/679720.png"
+              alt="Taller automotriz"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">Taller Automotriz Centro Campero</h3>
+                <span class="pill-cat">Talleres</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.8</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+                <span class="badge">Servicio a domicilio</span>
+              </div>
+              <p class="biz-meta">CRA 1D #41A-43, Montería - Córdoba</p>
+              <p class="biz-meta">Tel: 310 721 1849</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/abcd12"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="servicio-reparacion-pc.html"
+                  >Más Información</a
+                >
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Tecnología"
+            data-title="Soporte e Instalación de Software"
+            data-keywords="soporte instalación software remoto montería 6047833113 3174083572"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png"
+              alt="Instalación de software"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">Soporte e Instalación de Software</h3>
+                <span class="pill-cat">Tecnología</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.7</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+                <span class="badge">Atención remota</span>
+              </div>
+              <p class="biz-meta">Atención a domicilio - Montería</p>
+              <p class="biz-meta">Tel: 604 783 3113 · 317 408 3572</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/efgh34"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="servicio-instalacion-software.html"
+                  >Más Información</a
+                >
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Hoteles"
+            data-title="Hotel San José Plaza"
+            data-keywords="hotel san jose plaza montería cordoba 3126977341 3015375834"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3171/3171919.png"
+              alt="Hotel"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">Hotel San José Plaza</h3>
+                <span class="pill-cat">Hoteles</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.6</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+              </div>
+              <p class="biz-meta">Cra. 1B #38-15, Montería, Córdoba</p>
+              <p class="biz-meta">Cel: 312 697 7341 · 301 537 5834</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/hotel01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="negocio-techzone.html"
+                  >Más Información</a
+                >
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Restaurantes"
+            data-title="Restaurante El Bocachico Sinuano"
+            data-keywords="restaurante bocachico sinuano montería 3206676675 3215911473"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/857/857681.png"
+              alt="Restaurante"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">Restaurante El Bocachico Sinuano</h3>
+                <span class="pill-cat">Restaurantes</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.5</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+              </div>
+              <p class="biz-meta">Kra 1A con Calle 37 y 38, Montería</p>
+              <p class="biz-meta">Tel: 320 667 6675 · 321 591 1473</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/rest01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="negocio-veterinaria.html"
+                  >Más Información</a
+                >
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Servicios"
+            data-title="LubriCAR"
+            data-keywords="lubricentro lubricar montería 6047824646 3166896138"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png"
+              alt="Lubricentro"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">LubriCAR</h3>
+                <span class="pill-cat">Servicios</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.6</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+              </div>
+              <p class="biz-meta">Calle 39 # 1-23, Montería</p>
+              <p class="biz-meta">Tel: 604 782 4646 · 316 689 6138</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/lub01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="negocio-parrilla.html"
+                  >Más Información</a
+                >
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Construcción"
+            data-title="JM Construcciones"
+            data-keywords="jm construcciones montería 3103637477 3145584403"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3534/3534067.png"
+              alt="Construcciones"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">JM Construcciones</h3>
+                <span class="pill-cat">Construcción</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.7</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+              </div>
+              <p class="biz-meta">Cra 1B # 43-43 B. Sucre, Montería</p>
+              <p class="biz-meta">Cel: 310 363 7477 · 314 558 4403</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/cons01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="#">Más Información</a>
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Tecnología"
+            data-title="TechZone Montería"
+            data-keywords="techzone tecnologia computadores accesorios montería 3001234567"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2620/2620469.png"
+              alt="Tienda de tecnología"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">TechZone Montería</h3>
+                <span class="pill-cat">Tecnología</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.6</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+                <span class="badge">Garantía oficial</span>
+              </div>
+              <p class="biz-meta">Cll 36 # 2-15, Montería</p>
+              <p class="biz-meta">Tel: 300 123 4567</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/tech01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="#">Más Información</a>
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Servicios"
+            data-title="Clínica Veterinaria Montería"
+            data-keywords="clinica veterinaria servicios mascotas montería 3112223344"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+              alt="Clínica veterinaria"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">Clínica Veterinaria Montería</h3>
+                <span class="pill-cat">Servicios</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.9</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+                <span class="badge">Urgencias 24/7</span>
+              </div>
+              <p class="biz-meta">Av. Principal # 45-20, Montería</p>
+              <p class="biz-meta">Tel: 311 222 3344</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/vet01"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="#">Más Información</a>
+              </div>
+            </div>
+          </article>
+          <article
+            class="business-card"
+            data-category="Restaurantes"
+            data-title="La Parrilla del Río"
+            data-keywords="restaurante parrilla carnes rio montería 3201112233"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png"
+              alt="Restaurante de parrilla"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div class="biz-header">
+                <h3 class="biz-title">La Parrilla del Río</h3>
+                <span class="pill-cat">Restaurantes</span>
+              </div>
+              <div class="biz-sub">
+                <span class="biz-rating"
+                  >★★★★★ <span class="count">4.7</span></span
+                >
+                <span class="open-now">Abierto ahora</span>
+                <span class="badge">Reserva en línea</span>
+              </div>
+              <p class="biz-meta">Malecón del Sinú, Montería</p>
+              <p class="biz-meta">Tel: 320 111 2233</p>
+              <div class="biz-actions">
+                <a
+                  class="btn-wa"
+                  href="https://wa.link/rest02"
+                  target="_blank"
+                  rel="noopener"
+                  >WhatsApp</a
+                >
+                <a class="btn-info" href="#">Más Información</a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="pagination" aria-label="Paginación">
+          <span class="page">1</span>
+          <a href="#" class="page">2</a>
+          <a href="#" class="page">3</a>
+          <a href="#" class="page">Siguiente</a>
+        </div>
+        <div class="banner" style="margin-top: 1.5rem">
+          <h2>
+            ¿Quieres colocar tu negocio o empresa en nuestras plataformas?
+          </h2>
+          <p>Nuestros expertos están listos para ayudarte.</p>
+          <div
+            style="
+              display: flex;
+              gap: 0.75rem;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <a
+              class="btn-main"
+              href="https://wa.link/0a9uev"
+              target="_blank"
+              rel="noopener"
+              >Chat con asesor</a
+            >
+            <a class="btn-main" href="#contacto">Regístrate aquí</a>
+          </div>
+        </div>
+      </section>
+      <section id="productos">
+        <h2 class="section-title">Productos Destacados</h2>
+        <div class="grid" id="productos-lista">
+          <div class="card">
+            <div class="card-header">
+              <span class="chip producto">producto</span>
+            </div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png"
+              alt="Laptop"
+            />
+            <h3>Laptop</h3>
+            <p class="desc">Potente laptop para trabajo y estudio.</p>
+            <p class="precio">Precio: <strong>$1200</strong></p>
+            <div class="card-actions">
+              <button onclick="agregarAlCarrito('producto', 1)">Agregar</button>
+            </div>
+            <a
+              class="card-link"
+              href="producto-laptop.html"
+              title="Ver detalle"
+              aria-label="Ver Laptop"
+            ></a>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="chip producto">producto</span>
+            </div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055672.png"
+              alt="Smartphone"
+            />
+            <h3>Smartphone</h3>
+            <p class="desc">Smartphone de última generación.</p>
+            <p class="precio">Precio: <strong>$800</strong></p>
+            <div class="card-actions">
+              <button onclick="agregarAlCarrito('producto', 2)">Agregar</button>
+            </div>
+            <a
+              class="card-link"
+              href="producto-smartphone.html"
+              title="Ver detalle"
+              aria-label="Ver Smartphone"
+            ></a>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="chip producto">producto</span>
+            </div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055676.png"
+              alt="Auriculares"
+            />
+            <h3>Auriculares</h3>
+            <p class="desc">Auriculares inalámbricos de alta calidad.</p>
+            <p class="precio">Precio: <strong>$150</strong></p>
+            <div class="card-actions">
+              <button onclick="agregarAlCarrito('producto', 3)">Agregar</button>
+            </div>
+            <a
+              class="card-link"
+              href="producto-auriculares.html"
+              title="Ver detalle"
+              aria-label="Ver Auriculares"
+            ></a>
+          </div>
+        </div>
+      </section>
+      <section id="servicios">
+        <h2 class="section-title">Servicios Populares</h2>
+        <div class="grid" id="servicios-lista">
+          <div class="card">
+            <div class="card-header">
+              <span class="chip servicio">servicio</span>
+            </div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055679.png"
+              alt="Reparación de PC"
+            />
+            <h3>Reparación de PC</h3>
+            <p class="desc">
+              Solución de problemas y mantenimiento de computadoras.
+            </p>
+            <p class="precio">Precio: <strong>$300</strong></p>
+            <div class="card-actions">
+              <button onclick="agregarAlCarrito('servicio', 1)">Agregar</button>
+            </div>
+            <a
+              class="card-link"
+              href="servicio-reparacion-pc.html"
+              title="Ver detalle"
+              aria-label="Ver Reparación de PC"
+            ></a>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="chip servicio">servicio</span>
+            </div>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1055/1055673.png"
+              alt="Instalación de software"
+            />
+            <h3>Instalación de software</h3>
+            <p class="desc">Instalación profesional de software y sistemas.</p>
+            <p class="precio">Precio: <strong>$100</strong></p>
+            <div class="card-actions">
+              <button onclick="agregarAlCarrito('servicio', 2)">Agregar</button>
+            </div>
+            <a
+              class="card-link"
+              href="servicio-instalacion-software.html"
+              title="Ver detalle"
+              aria-label="Ver Instalación de software"
+            ></a>
+          </div>
+        </div>
+      </section>
+      <section id="carrito">
+        <h2 class="section-title">Tu Carrito</h2>
+        <ul id="carrito-lista">
+          <!-- Carrito se muestra aquí -->
+        </ul>
+        <button id="vaciar-carrito" class="btn-main">Vaciar carrito</button>
+      </section>
+      <section id="contacto">
+        <h2 class="section-title">Contacto</h2>
+        <form id="form-contacto">
+          <input type="text" placeholder="Nombre" required />
+          <input type="email" placeholder="Correo" required />
+          <textarea placeholder="Mensaje" required></textarea>
+          <button type="submit" class="btn-main">Enviar</button>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2025 MONTERIA VENDE | Desarrollado por tu equipo</p>
+      <div class="redes">
+        <a href="#"
+          ><img
+            src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+            alt="Facebook"
+            width="28"
+        /></a>
+        <a href="#"
+          ><img
+            src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
+            alt="Instagram"
+            width="28"
+        /></a>
+        <a href="#"
+          ><img
+            src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+            alt="WhatsApp"
+            width="28"
+        /></a>
+      </div>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>
