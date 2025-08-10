@@ -302,6 +302,7 @@ function slugify(str) {
       descripcion: r.descripcion,
       imagen: r.imagen,
       url: r.url,
+      whatsapp: r.whatsapp,
       tipo: r.tipo || "producto",
     }));
   }
@@ -327,6 +328,11 @@ function slugify(str) {
           : `${tipo === "servicio" ? "servicios" : "productos"}/${slugify(
               name
             )}/`;
+      const waLink = it.whatsapp
+        ? it.whatsapp
+        : `https://wa.me/573000000000?text=${encodeURIComponent(
+            `Hola, me interesa el ${tipo} ${name}`
+          )}`;
       card.innerHTML = `
         <div class="card-header">
           <span class="chip ${tipo}">${tipo}</span>
@@ -340,7 +346,7 @@ function slugify(str) {
             : ""
         }
         <div class="card-actions">
-          <button onclick="agregarAlCarrito('${tipo}', ${id})">Agregar</button>
+          <a class="btn-wa" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
         </div>
         <a class="card-link" href="${href}" title="Ver detalle" aria-label="Ver ${name}"></a>
       `;

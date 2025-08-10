@@ -312,7 +312,7 @@ function businessTemplate(b, related = []) {
     b.categoria
   }</a> / <span>${b.nombre}</span>
  </nav>
-<article class="detail">
+<article class="detail detail--product">
   <header class="detail-header">
     ${
       b.icono
@@ -378,6 +378,7 @@ function productTemplate(p, related = []) {
     ["Descripción", p.descripcion],
     ["Imagen", p.imagen],
     ["URL", p.url],
+    ["WhatsApp", p.whatsapp],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
@@ -416,6 +417,7 @@ function productTemplate(p, related = []) {
           availability: "https://schema.org/InStock",
         }
       : undefined,
+    sameAs: p.whatsapp ? [p.whatsapp] : undefined,
   };
   const ldBreadcrumbs = {
     "@context": "https://schema.org",
@@ -447,7 +449,7 @@ function productTemplate(p, related = []) {
     p.nombre
   }</span>
 </nav>
-<article class="detail">
+<article class="detail detail--product">
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
@@ -458,7 +460,10 @@ function productTemplate(p, related = []) {
         }
         <div>
           <h1 class="detail-title">${p.nombre}</h1>
-          ${p.precio ? `<div class="price-lg">${p.precio}</div>` : ""}
+          <div class="detail-sub">
+            <span class="chip producto">Producto</span>
+            ${p.precio ? `<span class="price-lg">${p.precio}</span>` : ""}
+          </div>
         </div>
       </header>
       ${
@@ -468,12 +473,19 @@ function productTemplate(p, related = []) {
       }
       ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
       <div class="detail-actions">
-        <a class="btn-primary" href="/index.html#productos">Volver a productos</a>
+        ${
+          p.whatsapp
+            ? `<a class="btn-wa" href="${p.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
+            : `<a class=\"btn-wa\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
+                `Hola, me interesa el producto ${p.nombre}`
+              )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
+        }
+        <a class="btn-outline" href="/index.html#productos">Volver a productos</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-  <dl class="detail-dl">${detailsRows}</dl>
+      <dl class="detail-dl">${detailsRows}</dl>
     </div>
-  <aside class="detail-side">${relatedHtml}</aside>
+    <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </article>
 `;
@@ -509,6 +521,7 @@ function serviceTemplate(s, related = []) {
     ["Descripción", s.descripcion],
     ["Imagen", s.imagen],
     ["URL", s.url],
+    ["WhatsApp", s.whatsapp],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")
     .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
@@ -547,6 +560,7 @@ function serviceTemplate(s, related = []) {
         }
       : undefined,
     areaServed: { "@type": "City", name: "Montería" },
+    sameAs: s.whatsapp ? [s.whatsapp] : undefined,
   };
   const ldBreadcrumbs = {
     "@context": "https://schema.org",
@@ -578,7 +592,7 @@ function serviceTemplate(s, related = []) {
     s.nombre
   }</span>
 </nav>
-<article class="detail">
+<article class="detail detail--service">
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
@@ -589,7 +603,10 @@ function serviceTemplate(s, related = []) {
         }
         <div>
           <h1 class="detail-title">${s.nombre}</h1>
-          ${s.precio ? `<div class="price-lg">${s.precio}</div>` : ""}
+          <div class="detail-sub">
+            <span class="chip servicio">Servicio</span>
+            ${s.precio ? `<span class="price-lg">${s.precio}</span>` : ""}
+          </div>
         </div>
       </header>
       ${
@@ -599,7 +616,14 @@ function serviceTemplate(s, related = []) {
       }
       ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
       <div class="detail-actions">
-        <a class="btn-primary" href="/index.html#servicios">Volver a servicios</a>
+        ${
+          s.whatsapp
+            ? `<a class="btn-wa" href="${s.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
+            : `<a class=\"btn-wa\" href=\"https://wa.me/573000000000?text=${encodeURIComponent(
+                `Hola, me interesa el servicio ${s.nombre}`
+              )}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
+        }
+        <a class="btn-outline" href="/index.html#servicios">Volver a servicios</a>
       </div>
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
