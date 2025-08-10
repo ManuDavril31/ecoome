@@ -73,6 +73,31 @@
 			"label": "Regenerate with SEO MD block",
 			"type": "shell",
 			"command": "npm run generate"
+		},
+		{
+			"label": "Regenerate with SEO MD block",
+			"type": "shell",
+			"command": "npm run generate"
+		},
+		{
+			"label": "Regenerate with SEO MD block",
+			"type": "shell",
+			"command": "npm run generate"
+		},
+		{
+			"label": "Regenerate with SEO MD block",
+			"type": "shell",
+			"command": "npm run generate"
+		},
+		{
+			"label": "Regenerate with SEO MD block",
+			"type": "shell",
+			"command": "npm run generate"
+		},
+		{
+			"label": "Regenerate with SEO MD block",
+			"type": "shell",
+			"command": "npm run generate"
 		}
 	]
 }

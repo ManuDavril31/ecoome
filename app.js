@@ -320,13 +320,13 @@ function slugify(str) {
         (tipo === "servicio"
           ? "https://cdn-icons-png.flaticon.com/512/1055/1055679.png"
           : "https://cdn-icons-png.flaticon.com/512/1055/1055687.png");
+      const name = it.nombre || (tipo === "servicio" ? "Servicio" : "Producto");
       const href =
         it.url && it.url !== "#"
           ? it.url
           : `${tipo === "servicio" ? "servicios" : "productos"}/${slugify(
               name
             )}/`;
-      const name = it.nombre || (tipo === "servicio" ? "Servicio" : "Producto");
       card.innerHTML = `
         <div class="card-header">
           <span class="chip ${tipo}">${tipo}</span>

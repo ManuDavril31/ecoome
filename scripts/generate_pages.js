@@ -11,6 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 const root = process.cwd();
+const SITE_URL = process.env.SITE_URL || "https://monteriavende.com";
 
 function readJson(file) {
   const p = path.join(root, file);
@@ -43,8 +44,19 @@ function writeFileSafe(filePath, content) {
   fs.writeFileSync(filePath, content, "utf8");
 }
 
-function baseHtml({ title, description, body }) {
+function baseHtml({
+  title,
+  description,
+  body,
+  path: pagePath = "/",
+  extraHead = "",
+  ogType = "website",
+  image = "https://cdn-icons-png.flaticon.com/512/535/535239.png",
+}) {
   // Referencia a estilos y scripts del sitio
+  const canonical = `${SITE_URL.replace(/\/$/, "")}${
+    pagePath.startsWith("/") ? pagePath : "/" + pagePath
+  }`;
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -52,9 +64,22 @@ function baseHtml({ title, description, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>${title}</title>
 <meta name="description" content="${description || ""}">
-<link rel="canonical" href="/" />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="${canonical}" />
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/535/535239.png" />
 <link rel="stylesheet" href="/styles.css" />
+<!-- OpenGraph / Twitter -->
+<meta property="og:type" content="${ogType}" />
+<meta property="og:title" content="${title}" />
+<meta property="og:description" content="${description || ""}" />
+<meta property="og:url" content="${canonical}" />
+<meta property="og:image" content="${image}" />
+<meta property="og:locale" content="es_CO" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="${title}" />
+<meta name="twitter:description" content="${description || ""}" />
+<meta name="twitter:image" content="${image}" />
+${extraHead}
 </head>
 <body>
 <nav style="padding:1rem"><a href="/index.html">Home</a></nav>
@@ -186,7 +211,10 @@ function mdToHtml(md) {
 
     // Enlaces e imágenes, negritas/itálicas, código inline
     let html = line
-      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2" />')
+      .replace(
+        /!\[([^\]]*)\]\(([^)]+)\)/g,
+        '<img alt="$1" src="$2" loading="lazy" decoding="async" />'
+      )
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/\*([^*]+)\*/g, "<em>$1</em>")
@@ -205,6 +233,8 @@ function businessTemplate(b, related = []) {
     b.direccion || ""
   }. Tel: ${b.telefono || ""}.`;
   const catSlug = slugify(b.categoria || "otros");
+  const slug = slugify(b.nombre);
+  const pagePath = `/directorio/${catSlug}/${slug}/`;
   const detailsRows = [
     ["Nombre", b.nombre],
     ["Categoría", b.categoria],
@@ -226,17 +256,65 @@ function businessTemplate(b, related = []) {
           .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
           .join("")}</ul></section>`
       : "";
+  const ldLocal = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: b.nombre,
+    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
+    telephone: b.telefono || undefined,
+    image: b.icono || undefined,
+    address: b.direccion
+      ? {
+          "@type": "PostalAddress",
+          streetAddress: b.direccion,
+          addressLocality: "Montería",
+          addressRegion: "Córdoba",
+          addressCountry: "CO",
+        }
+      : undefined,
+    sameAs: b.whatsapp ? [b.whatsapp] : undefined,
+  };
+  const ldBreadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Directorio",
+        item: `${SITE_URL}/index.html#directorio`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: b.categoria || "Categoría",
+        item: `${SITE_URL}/directorio/${catSlug}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: b.nombre,
+        item: `${SITE_URL}${pagePath}`,
+      },
+    ],
+  };
+  const extraHead = `\n<script type="application/ld+json">${JSON.stringify(
+    ldLocal
+  )}</script>\n<script type="application/ld+json">${JSON.stringify(
+    ldBreadcrumbs
+  )}</script>`;
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#directorio">Directorio</a> / <a href="/directorio/${catSlug}/">${
     b.categoria
   }</a> / <span>${b.nombre}</span>
  </nav>
-<section class="detail">
+<article class="detail">
   <header class="detail-header">
     ${
       b.icono
-        ? `<img class="detail-icon" src="${b.icono}" alt="${b.nombre}">`
+        ? `<img class="detail-icon" src="${b.icono}" alt="${b.nombre}" width="56" height="56" loading="lazy" decoding="async">`
         : ""
     }
     <div>
@@ -273,15 +351,25 @@ function businessTemplate(b, related = []) {
       ${relatedHtml}
     </aside>
   </div>
-</section>
+</article>
 ${seoHtml}
 `;
-  return baseHtml({ title, description: desc, body });
+  return baseHtml({
+    title,
+    description: desc,
+    body,
+    path: pagePath,
+    extraHead,
+    ogType: "website",
+    image: b.icono || undefined,
+  });
 }
 
 function productTemplate(p, related = []) {
   const title = `${p.nombre} | Producto en Montería`;
   const desc = `${p.nombre}. ${p.descripcion || ""}`;
+  const slug = slugify(p.nombre);
+  const pagePath = `/productos/${slug}/`;
   const detailsRows = [
     ["Nombre", p.nombre],
     ["Precio", p.precio],
@@ -301,19 +389,69 @@ function productTemplate(p, related = []) {
           .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
           .join("")}</ul></section>`
       : "";
+  // Intentar extraer precio numérico y moneda COP
+  const priceNum =
+    typeof p.precio === "string"
+      ? p.precio
+          .replace(/[^0-9.,]/g, "")
+          .replace(/\./g, "")
+          .replace(",", ".")
+      : undefined;
+  const price =
+    priceNum && !isNaN(parseFloat(priceNum)) ? parseFloat(priceNum) : undefined;
+  const ldProduct = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.nombre,
+    description: p.descripcion || undefined,
+    image: p.imagen || undefined,
+    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
+    offers: price
+      ? {
+          "@type": "Offer",
+          priceCurrency: "COP",
+          price: price.toString(),
+          availability: "https://schema.org/InStock",
+        }
+      : undefined,
+  };
+  const ldBreadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Productos",
+        item: `${SITE_URL}/index.html#productos`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: p.nombre,
+        item: `${SITE_URL}${pagePath}`,
+      },
+    ],
+  };
+  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
+    ldProduct
+  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
+    ldBreadcrumbs
+  )}</script>`;
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#productos">Productos</a> / <span>${
     p.nombre
   }</span>
 </nav>
-<section class="detail">
+<article class="detail">
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
         ${
           p.imagen
-            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}">`
+            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="56" height="56" loading="lazy" decoding="async">`
             : ""
         }
         <div>
@@ -330,15 +468,34 @@ function productTemplate(p, related = []) {
     </div>
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
-</section>
+</article>
 ${seoHtml}
 `;
-  return baseHtml({ title, description: desc, body });
+  return baseHtml({
+    title,
+    description: desc,
+    body,
+    path: pagePath,
+    extraHead,
+    ogType: "product",
+    image: p.imagen || undefined,
+  });
 }
 
 function serviceTemplate(s, related = []) {
   const title = `${s.nombre} | Servicio en Montería`;
   const desc = `${s.nombre}. ${s.descripcion || ""}`;
+  // Derivar slug desde s.url si existe y apunta a /servicios/<slug>/
+  let slug = slugify(s.nombre);
+  if (s.url && typeof s.url === "string") {
+    const idx = s.url.indexOf("servicios/");
+    if (idx !== -1) {
+      const rest = s.url.slice(idx + "servicios/".length);
+      const seg = rest.split(/[\/#?]/)[0];
+      if (seg) slug = seg;
+    }
+  }
+  const pagePath = `/servicios/${slug}/`;
   const detailsRows = [
     ["Nombre", s.nombre],
     ["Precio", s.precio],
@@ -358,19 +515,69 @@ function serviceTemplate(s, related = []) {
           .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
           .join("")}</ul></section>`
       : "";
+  const priceNum =
+    typeof s.precio === "string"
+      ? s.precio
+          .replace(/[^0-9.,]/g, "")
+          .replace(/\./g, "")
+          .replace(",", ".")
+      : undefined;
+  const price =
+    priceNum && !isNaN(parseFloat(priceNum)) ? parseFloat(priceNum) : undefined;
+  const ldService = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: s.nombre,
+    description: s.descripcion || undefined,
+    image: s.imagen || undefined,
+    url: `${SITE_URL.replace(/\/$/, "")}${pagePath}`,
+    offers: price
+      ? {
+          "@type": "Offer",
+          priceCurrency: "COP",
+          price: price.toString(),
+          availability: "https://schema.org/InStock",
+        }
+      : undefined,
+    areaServed: { "@type": "City", name: "Montería" },
+  };
+  const ldBreadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Servicios",
+        item: `${SITE_URL}/index.html#servicios`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: s.nombre,
+        item: `${SITE_URL}${pagePath}`,
+      },
+    ],
+  };
+  const extraHead = `\n<script type=\"application/ld+json\">${JSON.stringify(
+    ldService
+  )}</script>\n<script type=\"application/ld+json\">${JSON.stringify(
+    ldBreadcrumbs
+  )}</script>`;
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#servicios">Servicios</a> / <span>${
     s.nombre
   }</span>
 </nav>
-<section class="detail">
+<article class="detail">
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
         ${
           s.imagen
-            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}">`
+            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="56" height="56" loading="lazy" decoding="async">`
             : ""
         }
         <div>
@@ -387,16 +594,25 @@ function serviceTemplate(s, related = []) {
     </div>
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
-</section>
+</article>
 ${seoHtml}
 `;
-  return baseHtml({ title, description: desc, body });
+  return baseHtml({
+    title,
+    description: desc,
+    body,
+    path: pagePath,
+    extraHead,
+    ogType: "website",
+    image: s.imagen || undefined,
+  });
 }
 
 function generateAll() {
   const negocios = readJson("negocios.json");
   const productos = readJson("productos.json");
   const servicios = readJson("servicios.json");
+  const urls = [`${SITE_URL}/`, `${SITE_URL}/index.html`];
 
   // Directorio por categoría (silo) → /directorio/<categoria>/<slug>/index.html
   for (const b of negocios) {
@@ -419,6 +635,7 @@ function generateAll() {
         )}/`,
       }));
     writeFileSafe(file, businessTemplate(b, related));
+    urls.push(`${SITE_URL}/directorio/${cat}/${slug}/`);
   }
 
   // Productos → /productos/<slug>/index.html
@@ -434,22 +651,53 @@ function generateAll() {
         url: `/productos/${slugify(x.nombre)}/`,
       }));
     writeFileSafe(file, productTemplate(p, related));
+    urls.push(`${SITE_URL}/productos/${slug}/`);
   }
 
   // Servicios → /servicios/<slug>/index.html
   for (const s of servicios) {
-    const slug = slugify(s.nombre);
+    // Permitir override de slug desde s.url si apunta a servicios/<slug>
+    let slug = slugify(s.nombre);
+    if (s.url && typeof s.url === "string") {
+      const idx = s.url.indexOf("servicios/");
+      if (idx !== -1) {
+        const rest = s.url.slice(idx + "servicios/".length);
+        const seg = rest.split(/[\/#?]/)[0];
+        if (seg) slug = seg;
+      }
+    }
     const dir = path.join(root, "servicios", slug);
     const file = path.join(dir, "index.html");
     const related = servicios
       .filter((x) => x !== s)
       .slice(0, 5)
-      .map((x) => ({
-        nombre: x.nombre,
-        url: `/servicios/${slugify(x.nombre)}/`,
-      }));
+      .map((x) => {
+        let rslug = slugify(x.nombre);
+        if (x.url && typeof x.url === "string") {
+          const idx2 = x.url.indexOf("servicios/");
+          if (idx2 !== -1) {
+            const rest2 = x.url.slice(idx2 + "servicios/".length);
+            const seg2 = rest2.split(/[\/#?]/)[0];
+            if (seg2) rslug = seg2;
+          }
+        }
+        return { nombre: x.nombre, url: `/servicios/${rslug}/` };
+      });
     writeFileSafe(file, serviceTemplate(s, related));
+    urls.push(`${SITE_URL}/servicios/${slug}/`);
   }
+
+  // sitemap.xml
+  const sitemap =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n") +
+    "\n</urlset>\n";
+  writeFileSafe(path.join(root, "sitemap.xml"), sitemap);
+
+  // robots.txt
+  const robots = `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+  writeFileSafe(path.join(root, "robots.txt"), robots);
 
   console.log("Páginas generadas.");
 }
