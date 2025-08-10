@@ -850,11 +850,11 @@ footer {
 
 /* Contenido SEO (Markdown) */
 .seo-content {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: inherit; /* hereda el fondo del contenedor padre */
+  border: 0; /* sin borde para integrarse */
+  border-radius: 0;
   padding: 1rem;
-  box-shadow: var(--shadow-1);
+  box-shadow: none; /* sin sombra para no parecer tarjeta */
 }
 .detail + .seo-content {
   margin-top: 1.5rem; /* separación ampliada entre detalles y bloque SEO */
