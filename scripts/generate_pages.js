@@ -312,13 +312,13 @@ function businessTemplate(b, related = []) {
     b.categoria
   }</a> / <span>${b.nombre}</span>
  </nav>
-<article class="detail detail--product">
-  <header class="detail-header">
-    ${
-      b.icono
-        ? `<img class="detail-icon" src="${b.icono}" alt="${b.nombre}" width="56" height="56" loading="lazy" decoding="async">`
-        : ""
-    }
+<article class="detail detail--business">
+      <header class="detail-header">
+        ${
+          b.icono
+            ? `<img class=\"detail-icon\" src=\"${b.icono}\" alt=\"${b.nombre}\" width=\"56\" height=\"56\" loading=\"lazy\" decoding=\"async\">`
+            : ""
+        }
     <div>
       <h1 class="detail-title">${b.nombre}</h1>
       <div class="pill-cat">${b.categoria}</div>
@@ -453,11 +453,6 @@ function productTemplate(p, related = []) {
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
-        ${
-          p.imagen
-            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}" width="72" height="72" loading="lazy" decoding="async">`
-            : ""
-        }
         <div>
           <h1 class="detail-title">${p.nombre}</h1>
           <div class="detail-sub">
@@ -596,11 +591,6 @@ function serviceTemplate(s, related = []) {
   <div class="detail-grid">
     <div class="detail-main">
       <header class="detail-header">
-        ${
-          s.imagen
-            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}" width="72" height="72" loading="lazy" decoding="async">`
-            : ""
-        }
         <div>
           <h1 class="detail-title">${s.nombre}</h1>
           <div class="detail-sub">
