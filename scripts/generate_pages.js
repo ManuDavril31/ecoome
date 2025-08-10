@@ -268,13 +268,13 @@ function businessTemplate(b, related = []) {
       </div>
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
-  ${seoHtml}
     </div>
     <aside class="detail-side">
       ${relatedHtml}
     </aside>
   </div>
 </section>
+${seoHtml}
 `;
   return baseHtml({ title, description: desc, body });
 }
@@ -327,11 +327,11 @@ function productTemplate(p, related = []) {
       </div>
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
-  ${seoHtml}
     </div>
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </section>
+${seoHtml}
 `;
   return baseHtml({ title, description: desc, body });
 }
@@ -384,11 +384,11 @@ function serviceTemplate(s, related = []) {
       </div>
       <h3 class="section-title">Detalles</h3>
   <dl class="detail-dl">${detailsRows}</dl>
-  ${seoHtml}
     </div>
   <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </section>
+${seoHtml}
 `;
   return baseHtml({ title, description: desc, body });
 }
