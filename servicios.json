@@ -4,13 +4,15 @@
     "precio": "$300.000",
     "descripcion": "Diagnóstico, mantenimiento y reparación de equipos.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055679.png",
-    "url": "servicios/reparacion-de-pc/"
+    "url": "servicios/reparacion-de-pc/",
+    "seo_md": "# Reparación de computadores en Montería\n\n**Servicio técnico a domicilio y en taller.** Trabajamos con equipos de escritorio y portátiles.\n\n## Qué incluye\n- Diagnóstico profesional\n- Limpieza profunda y cambio de pasta térmica\n- Reemplazo de piezas (baterías, teclados, discos)\n- Formateo y optimización de Windows\n\n## Tiempos y garantía\n- Diagnóstico: 24 h\n- Reparaciones comunes: 24–72 h\n- Garantía: 30 días por servicio\n\n| Servicio | Tiempo | Desde |\n|---|---|---|\n| Diagnóstico | 24 h | $50.000 |\n| Formateo + SO | 48 h | $150.000 |\n| Cambio de SSD | 24 h | $180.000 |"
   },
   {
     "nombre": "Instalación de software",
     "precio": "$100.000",
     "descripcion": "Instalación y configuración de sistemas y programas.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055673.png",
-    "url": "servicios/instalacion-de-software/"
+    "url": "servicios/instalacion-de-software/",
+    "seo_md": "# Instalación y configuración de software\n\nInstalamos sistemas operativos, suites de oficina, antivirus y software especializado.\n\n## Beneficios\n- Configuración segura y optimizada\n- Licencias genuinas (si el cliente las provee)\n- Creación de puntos de restauración\n\n## Requisitos\n1. Dispositivo con mínimo 8 GB RAM recomendado\n2. Respaldo previo de información\n3. Llaves de licencia (si aplican)"
   }
 ]

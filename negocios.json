@@ -6,7 +6,8 @@
     "telefono": "3107211849",
     "whatsapp": "https://wa.link/abcd12",
     "url": "directorio/talleres/taller-automotriz-centro-campero/",
-    "icono": "https://cdn-icons-png.flaticon.com/512/679/679720.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/679/679720.png",
+    "seo_md": "# Taller automotriz en Montería\n\nMecánica rápida, alineación y balanceo. Atención de lunes a sábado.\n\n- Cambio de aceite\n- Frenos\n- Suspensión"
   },
   {
     "nombre": "Soporte e Instalación de Software",
@@ -15,7 +16,8 @@
     "telefono": "6047833113",
     "whatsapp": "https://wa.link/efgh34",
     "url": "directorio/tecnologia/soporte-e-instalacion-de-software/",
-    "icono": "https://cdn-icons-png.flaticon.com/512/2921/2921822.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/2921/2921822.png",
+    "seo_md": "# Soporte de software\n\nInstalación de sistemas, drivers y programas esenciales.\n\n> Servicio a empresas y hogares."
   },
   {
     "nombre": "Hotel San José Plaza",
@@ -24,7 +26,8 @@
     "telefono": "3126977341",
     "whatsapp": "https://wa.link/hotel01",
     "url": "directorio/hoteles/hotel-san-jose-plaza/",
-    "icono": "https://cdn-icons-png.flaticon.com/512/3171/3171919.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/3171/3171919.png",
+    "seo_md": "# Hotel en Montería\n\nHabitaciones cómodas, WiFi y desayuno incluido."
   },
   {
     "nombre": "Restaurante El Bocachico Sinuano",
@@ -33,7 +36,8 @@
     "telefono": "3206676675",
     "whatsapp": "https://wa.link/rest01",
     "url": "directorio/restaurantes/restaurante-el-bocachico-sinuano/",
-    "icono": "https://cdn-icons-png.flaticon.com/512/857/857681.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/857/857681.png",
+    "seo_md": "# Comida típica\n\nEspecialidad en pescados del Sinú."
   },
   {
     "nombre": "LubriCAR",
@@ -42,7 +46,8 @@
     "telefono": "6047824646",
     "whatsapp": "https://wa.link/lub01",
     "url": "directorio/servicios/lubricar/",
-    "icono": "https://cdn-icons-png.flaticon.com/512/2331/2331970.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/2331/2331970.png",
+    "seo_md": "# Lubricentro\n\nCambio de aceite y filtros en 30 minutos."
   },
   {
     "nombre": "JM Construcciones",
@@ -51,7 +56,8 @@
     "telefono": "3103637477",
     "whatsapp": "https://wa.link/cons01",
     "url": "#",
-    "icono": "https://cdn-icons-png.flaticon.com/512/3534/3534067.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/3534/3534067.png",
+    "seo_md": "# Empresa constructora\n\nObra civil, remodelaciones y estructuras metálicas."
   },
   {
     "nombre": "TechZone Montería",
@@ -60,7 +66,8 @@
     "telefono": "3001234567",
     "whatsapp": "https://wa.link/tech01",
     "url": "#",
-    "icono": "https://cdn-icons-png.flaticon.com/512/2620/2620469.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/2620/2620469.png",
+    "seo_md": "# Tienda de tecnología\n\nAccesorios, periféricos y servicio técnico."
   },
   {
     "nombre": "Clínica Veterinaria Montería",
@@ -69,7 +76,8 @@
     "telefono": "3112223344",
     "whatsapp": "https://wa.link/vet01",
     "url": "#",
-    "icono": "https://cdn-icons-png.flaticon.com/512/616/616408.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+    "seo_md": "# Veterinaria\n\nVacunación, cirugías y urgencias 24/7."
   },
   {
     "nombre": "La Parrilla del Río",
@@ -78,6 +86,7 @@
     "telefono": "3201112233",
     "whatsapp": "https://wa.link/rest02",
     "url": "#",
-    "icono": "https://cdn-icons-png.flaticon.com/512/3595/3595455.png"
+    "icono": "https://cdn-icons-png.flaticon.com/512/3595/3595455.png",
+    "seo_md": "# Parrilla y asados\n\nCortes a la parrilla con vista al río."
   }
 ]

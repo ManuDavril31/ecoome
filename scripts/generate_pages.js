@@ -66,12 +66,166 @@ function baseHtml({ title, description, body }) {
 </html>`;
 }
 
-function businessTemplate(b) {
+// Conversor Markdown básico → HTML (encabezados, listas, enlaces, imágenes, código, tablas)
+function mdToHtml(md) {
+  if (!md || typeof md !== "string") return "";
+  // Escape básico para evitar HTML injection
+  md = md.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // Bloques de código ```
+  let inCode = false;
+  const lines = md.split(/\r?\n/);
+  const out = [];
+  let listMode = null; // 'ul' | 'ol'
+  let tableMode = false;
+  let tableRows = [];
+
+  function flushList() {
+    if (listMode) {
+      out.push(listMode === "ul" ? "</ul>" : "</ol>");
+      listMode = null;
+    }
+  }
+  function flushTable() {
+    if (tableMode && tableRows.length) {
+      const [head, ...rest] = tableRows;
+      out.push('<table class="table">');
+      out.push(
+        "<thead><tr>" +
+          head.map((h) => `<th>${h.trim()}</th>`).join("") +
+          "</tr></thead>"
+      );
+      if (rest.length) {
+        out.push("<tbody>");
+        for (const row of rest)
+          out.push(
+            "<tr>" + row.map((c) => `<td>${c.trim()}</td>`).join("") + "</tr>"
+          );
+        out.push("</tbody>");
+      }
+      out.push("</table>");
+    }
+    tableMode = false;
+    tableRows = [];
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    if (line.trim().startsWith("```")) {
+      if (!inCode) {
+        flushList();
+        flushTable();
+        inCode = true;
+        out.push("<pre><code>");
+      } else {
+        inCode = false;
+        out.push("</code></pre>");
+      }
+      continue;
+    }
+    if (inCode) {
+      out.push(line);
+      continue;
+    }
+
+    // Tablas: líneas con |
+    if (line.includes("|") && /\|.*\|/.test(line)) {
+      // detectar separador de tabla (---)
+      const isSep = /^\s*\|?\s*:?-{3,}\s*(\|\s*:?-{3,}\s*)+\|?\s*$/.test(line);
+      if (!tableMode) {
+        flushList();
+        tableMode = true;
+        tableRows = [];
+      }
+      if (!isSep) {
+        const cells = line.split("|");
+        // eliminar celdas vacías de extremos si empiezan/terminan con |
+        if (cells[0].trim() === "") cells.shift();
+        if (cells[cells.length - 1].trim() === "") cells.pop();
+        tableRows.push(cells);
+      }
+      continue;
+    } else if (tableMode) {
+      flushTable();
+    }
+
+    // Listas
+    if (/^\s*[-*]\s+/.test(line)) {
+      if (listMode !== "ul") {
+        flushList();
+        listMode = "ul";
+        out.push("<ul>");
+      }
+      out.push("<li>" + line.replace(/^\s*[-*]\s+/, "") + "</li>");
+      continue;
+    }
+    if (/^\s*\d+\.\s+/.test(line)) {
+      if (listMode !== "ol") {
+        flushList();
+        listMode = "ol";
+        out.push("<ol>");
+      }
+      out.push("<li>" + line.replace(/^\s*\d+\.\s+/, "") + "</li>");
+      continue;
+    }
+    flushList();
+
+    // Encabezados
+    if (/^###\s+/.test(line)) {
+      out.push("<h3>" + line.replace(/^###\s+/, "") + "</h3>");
+      continue;
+    }
+    if (/^##\s+/.test(line)) {
+      out.push("<h2>" + line.replace(/^##\s+/, "") + "</h2>");
+      continue;
+    }
+    if (/^#\s+/.test(line)) {
+      out.push("<h1>" + line.replace(/^#\s+/, "") + "</h1>");
+      continue;
+    }
+
+    // Enlaces e imágenes, negritas/itálicas, código inline
+    let html = line
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2" />')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>");
+    if (html.trim() === "") out.push("<br/>");
+    else out.push("<p>" + html + "</p>");
+  }
+  flushList();
+  flushTable();
+  return out.join("\n");
+}
+
+function businessTemplate(b, related = []) {
   const title = `${b.nombre} | ${b.categoria} en Montería`;
   const desc = `${b.nombre} en ${b.categoria}. Dirección: ${
     b.direccion || ""
   }. Tel: ${b.telefono || ""}.`;
   const catSlug = slugify(b.categoria || "otros");
+  const detailsRows = [
+    ["Nombre", b.nombre],
+    ["Categoría", b.categoria],
+    ["Dirección", b.direccion],
+    ["Teléfono", b.telefono],
+    ["WhatsApp", b.whatsapp],
+    ["URL", b.url],
+    ["Icono", b.icono],
+  ]
+    .filter(([, v]) => v && String(v).trim() !== "")
+    .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
+    .join("");
+  const seoHtml = b.seo_md
+    ? `<section class="seo-content">${mdToHtml(b.seo_md)}</section>`
+    : "";
+  const relatedHtml =
+    Array.isArray(related) && related.length
+      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
+          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
+          .join("")}</ul></section>`
+      : "";
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#directorio">Directorio</a> / <a href="/directorio/${catSlug}/">${
@@ -113,18 +267,11 @@ function businessTemplate(b) {
         <a class="btn-info" href="/index.html#directorio">Volver al directorio</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-      <dl class="detail-dl">
-        <dt>Nombre</dt><dd>${b.nombre || ""}</dd>
-        <dt>Categoría</dt><dd>${b.categoria || ""}</dd>
-        <dt>Dirección</dt><dd>${b.direccion || ""}</dd>
-        <dt>Teléfono</dt><dd>${b.telefono || ""}</dd>
-        <dt>WhatsApp</dt><dd>${b.whatsapp || ""}</dd>
-        <dt>URL</dt><dd>${b.url || ""}</dd>
-        <dt>Icono</dt><dd>${b.icono || ""}</dd>
-      </dl>
+  <dl class="detail-dl">${detailsRows}</dl>
+  ${seoHtml}
     </div>
     <aside class="detail-side">
-      <!-- espacio para info adicional -->
+      ${relatedHtml}
     </aside>
   </div>
 </section>
@@ -132,9 +279,28 @@ function businessTemplate(b) {
   return baseHtml({ title, description: desc, body });
 }
 
-function productTemplate(p) {
+function productTemplate(p, related = []) {
   const title = `${p.nombre} | Producto en Montería`;
   const desc = `${p.nombre}. ${p.descripcion || ""}`;
+  const detailsRows = [
+    ["Nombre", p.nombre],
+    ["Precio", p.precio],
+    ["Descripción", p.descripcion],
+    ["Imagen", p.imagen],
+    ["URL", p.url],
+  ]
+    .filter(([, v]) => v && String(v).trim() !== "")
+    .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
+    .join("");
+  const seoHtml = p.seo_md
+    ? `<section class="seo-content">${mdToHtml(p.seo_md)}</section>`
+    : "";
+  const relatedHtml =
+    Array.isArray(related) && related.length
+      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
+          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
+          .join("")}</ul></section>`
+      : "";
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#productos">Productos</a> / <span>${
@@ -160,24 +326,38 @@ function productTemplate(p) {
         <a class="btn-primary" href="/index.html#productos">Volver a productos</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-      <dl class="detail-dl">
-        <dt>Nombre</dt><dd>${p.nombre || ""}</dd>
-        <dt>Precio</dt><dd>${p.precio || ""}</dd>
-        <dt>Descripción</dt><dd>${p.descripcion || ""}</dd>
-        <dt>Imagen</dt><dd>${p.imagen || ""}</dd>
-        <dt>URL</dt><dd>${p.url || ""}</dd>
-      </dl>
+  <dl class="detail-dl">${detailsRows}</dl>
+  ${seoHtml}
     </div>
-    <aside class="detail-side"></aside>
+  <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </section>
 `;
   return baseHtml({ title, description: desc, body });
 }
 
-function serviceTemplate(s) {
+function serviceTemplate(s, related = []) {
   const title = `${s.nombre} | Servicio en Montería`;
   const desc = `${s.nombre}. ${s.descripcion || ""}`;
+  const detailsRows = [
+    ["Nombre", s.nombre],
+    ["Precio", s.precio],
+    ["Descripción", s.descripcion],
+    ["Imagen", s.imagen],
+    ["URL", s.url],
+  ]
+    .filter(([, v]) => v && String(v).trim() !== "")
+    .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
+    .join("");
+  const seoHtml = s.seo_md
+    ? `<section class="seo-content">${mdToHtml(s.seo_md)}</section>`
+    : "";
+  const relatedHtml =
+    Array.isArray(related) && related.length
+      ? `<section class="related"><h3 class="section-title">Relacionados</h3><ul class="related-list">${related
+          .map((r) => `<li><a href="${r.url}">${r.nombre}</a></li>`)
+          .join("")}</ul></section>`
+      : "";
   const body = `
 <nav class="breadcrumbs">
   <a href="/">Inicio</a> / <a href="/index.html#servicios">Servicios</a> / <span>${
@@ -203,15 +383,10 @@ function serviceTemplate(s) {
         <a class="btn-primary" href="/index.html#servicios">Volver a servicios</a>
       </div>
       <h3 class="section-title">Detalles</h3>
-      <dl class="detail-dl">
-        <dt>Nombre</dt><dd>${s.nombre || ""}</dd>
-        <dt>Precio</dt><dd>${s.precio || ""}</dd>
-        <dt>Descripción</dt><dd>${s.descripcion || ""}</dd>
-        <dt>Imagen</dt><dd>${s.imagen || ""}</dd>
-        <dt>URL</dt><dd>${s.url || ""}</dd>
-      </dl>
+  <dl class="detail-dl">${detailsRows}</dl>
+  ${seoHtml}
     </div>
-    <aside class="detail-side"></aside>
+  <aside class="detail-side">${relatedHtml}</aside>
   </div>
 </section>
 `;
@@ -229,7 +404,21 @@ function generateAll() {
     const slug = slugify(b.nombre);
     const dir = path.join(root, "directorio", cat, slug);
     const file = path.join(dir, "index.html");
-    writeFileSafe(file, businessTemplate(b));
+    const related = negocios
+      .filter(
+        (x) =>
+          x !== b &&
+          (x.categoria || "").toLowerCase() ===
+            (b.categoria || "").toLowerCase()
+      )
+      .slice(0, 5)
+      .map((x) => ({
+        nombre: x.nombre,
+        url: `/directorio/${slugify(x.categoria || "otros")}/${slugify(
+          x.nombre
+        )}/`,
+      }));
+    writeFileSafe(file, businessTemplate(b, related));
   }
 
   // Productos → /productos/<slug>/index.html
@@ -237,7 +426,14 @@ function generateAll() {
     const slug = slugify(p.nombre);
     const dir = path.join(root, "productos", slug);
     const file = path.join(dir, "index.html");
-    writeFileSafe(file, productTemplate(p));
+    const related = productos
+      .filter((x) => x !== p)
+      .slice(0, 5)
+      .map((x) => ({
+        nombre: x.nombre,
+        url: `/productos/${slugify(x.nombre)}/`,
+      }));
+    writeFileSafe(file, productTemplate(p, related));
   }
 
   // Servicios → /servicios/<slug>/index.html
@@ -245,7 +441,14 @@ function generateAll() {
     const slug = slugify(s.nombre);
     const dir = path.join(root, "servicios", slug);
     const file = path.join(dir, "index.html");
-    writeFileSafe(file, serviceTemplate(s));
+    const related = servicios
+      .filter((x) => x !== s)
+      .slice(0, 5)
+      .map((x) => ({
+        nombre: x.nombre,
+        url: `/servicios/${slugify(x.nombre)}/`,
+      }));
+    writeFileSafe(file, serviceTemplate(s, related));
   }
 
   console.log("Páginas generadas.");
