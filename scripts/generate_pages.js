@@ -71,22 +71,52 @@ function businessTemplate(b) {
   const desc = `${b.nombre} en ${b.categoria}. Dirección: ${
     b.direccion || ""
   }. Tel: ${b.telefono || ""}.`;
+  const catSlug = slugify(b.categoria || "otros");
   const body = `
-<section>
-  <h1>${b.nombre}</h1>
-  <p><strong>Categoría:</strong> ${b.categoria}</p>
-  ${b.direccion ? `<p><strong>Dirección:</strong> ${b.direccion}</p>` : ""}
-  ${b.telefono ? `<p><strong>Teléfono:</strong> ${b.telefono}</p>` : ""}
-  ${
-    b.whatsapp
-      ? `<p><a class="btn-main" href="${b.whatsapp}" target="_blank" rel="noopener">WhatsApp</a></p>`
-      : ""
-  }
-  ${
-    b.url && b.url !== "#"
-      ? `<p><a href="${b.url}">Más información</a></p>`
-      : ""
-  }
+<nav class="breadcrumbs">
+  <a href="/">Inicio</a> / <a href="/index.html#directorio">Directorio</a> / <a href="/directorio/${catSlug}/">${
+    b.categoria
+  }</a> / <span>${b.nombre}</span>
+ </nav>
+<section class="detail">
+  <header class="detail-header">
+    ${
+      b.icono
+        ? `<img class="detail-icon" src="${b.icono}" alt="${b.nombre}">`
+        : ""
+    }
+    <div>
+      <h1 class="detail-title">${b.nombre}</h1>
+      <div class="pill-cat">${b.categoria}</div>
+    </div>
+  </header>
+  <div class="detail-grid">
+    <div class="detail-main">
+      <div class="detail-meta">
+        ${
+          b.direccion
+            ? `<div><strong>Dirección:</strong> ${b.direccion}</div>`
+            : ""
+        }
+        ${
+          b.telefono
+            ? `<div><strong>Teléfono:</strong> ${b.telefono}</div>`
+            : ""
+        }
+      </div>
+      <div class="detail-actions">
+        ${
+          b.whatsapp
+            ? `<a class="btn-primary" href="${b.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`
+            : ""
+        }
+        <a class="btn-info" href="/index.html#directorio">Volver al directorio</a>
+      </div>
+    </div>
+    <aside class="detail-side">
+      <!-- espacio para info adicional -->
+    </aside>
+  </div>
 </section>
 `;
   return baseHtml({ title, description: desc, body });
@@ -96,16 +126,32 @@ function productTemplate(p) {
   const title = `${p.nombre} | Producto en Montería`;
   const desc = `${p.nombre}. ${p.descripcion || ""}`;
   const body = `
-<section class="producto">
-  <h1>${p.nombre}</h1>
-  ${
-    p.imagen
-      ? `<img src="${p.imagen}" alt="${p.nombre}" style="max-width:320px"/>`
-      : ""
-  }
-  ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
-  ${p.precio ? `<p><strong>Precio:</strong> ${p.precio}</p>` : ""}
-  ${p.url && p.url !== "#" ? `<p><a href="${p.url}">Ver detalle</a></p>` : ""}
+<nav class="breadcrumbs">
+  <a href="/">Inicio</a> / <a href="/index.html#productos">Productos</a> / <span>${
+    p.nombre
+  }</span>
+</nav>
+<section class="detail">
+  <div class="detail-grid">
+    <div class="detail-main">
+      <header class="detail-header">
+        ${
+          p.imagen
+            ? `<img class="detail-icon" src="${p.imagen}" alt="${p.nombre}">`
+            : ""
+        }
+        <div>
+          <h1 class="detail-title">${p.nombre}</h1>
+          ${p.precio ? `<div class="price-lg">${p.precio}</div>` : ""}
+        </div>
+      </header>
+      ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
+      <div class="detail-actions">
+        <a class="btn-primary" href="/index.html#productos">Volver a productos</a>
+      </div>
+    </div>
+    <aside class="detail-side"></aside>
+  </div>
 </section>
 `;
   return baseHtml({ title, description: desc, body });
@@ -115,16 +161,32 @@ function serviceTemplate(s) {
   const title = `${s.nombre} | Servicio en Montería`;
   const desc = `${s.nombre}. ${s.descripcion || ""}`;
   const body = `
-<section class="servicio">
-  <h1>${s.nombre}</h1>
-  ${
-    s.imagen
-      ? `<img src="${s.imagen}" alt="${s.nombre}" style="max-width:320px"/>`
-      : ""
-  }
-  ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
-  ${s.precio ? `<p><strong>Precio:</strong> ${s.precio}</p>` : ""}
-  ${s.url && s.url !== "#" ? `<p><a href="${s.url}">Ver detalle</a></p>` : ""}
+<nav class="breadcrumbs">
+  <a href="/">Inicio</a> / <a href="/index.html#servicios">Servicios</a> / <span>${
+    s.nombre
+  }</span>
+</nav>
+<section class="detail">
+  <div class="detail-grid">
+    <div class="detail-main">
+      <header class="detail-header">
+        ${
+          s.imagen
+            ? `<img class="detail-icon" src="${s.imagen}" alt="${s.nombre}">`
+            : ""
+        }
+        <div>
+          <h1 class="detail-title">${s.nombre}</h1>
+          ${s.precio ? `<div class="price-lg">${s.precio}</div>` : ""}
+        </div>
+      </header>
+      ${s.descripcion ? `<p>${s.descripcion}</p>` : ""}
+      <div class="detail-actions">
+        <a class="btn-primary" href="/index.html#servicios">Volver a servicios</a>
+      </div>
+    </div>
+    <aside class="detail-side"></aside>
+  </div>
 </section>
 `;
   return baseHtml({ title, description: desc, body });
