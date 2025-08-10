@@ -49,6 +49,18 @@ function parseCsv(text) {
     });
 }
 
+// Slugify util para generar URLs limpias (coincide con el generador)
+function slugify(str) {
+  return (str || "")
+    .toString()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}+/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "")
+    .slice(0, 80);
+}
+
 // Lógica del directorio: búsqueda, categoría y filtros rápidos
 (function () {
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -133,7 +145,12 @@ function parseCsv(text) {
         const tel = biz.telefono;
         const addr = biz.direccion;
         const wa = biz.whatsapp;
-        const urlInfo = biz.url;
+        const catSlug = slugify(cat);
+        const titleSlug = slugify(title);
+        const urlInfo =
+          biz.url && biz.url !== "#"
+            ? biz.url
+            : `directorio/${catSlug}/${titleSlug}/`;
         const keywords = `${title} ${cat} ${addr} ${tel}`;
 
         const art = document.createElement("article");
@@ -157,7 +174,7 @@ function parseCsv(text) {
             <div class="biz-actions">
               ${
                 wa
-                  ? `<a class=\"btn-wa\" href=\"${wa}\" target=\"_blank\" rel=\"noopener\">WhatsApp</a>`
+                  ? `<a class="btn-wa" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>`
                   : ""
               }
               <a class="btn-info" href="${urlInfo}">Más Información</a>
@@ -303,7 +320,12 @@ function parseCsv(text) {
         (tipo === "servicio"
           ? "https://cdn-icons-png.flaticon.com/512/1055/1055679.png"
           : "https://cdn-icons-png.flaticon.com/512/1055/1055687.png");
-      const href = it.url || "#";
+      const href =
+        it.url && it.url !== "#"
+          ? it.url
+          : `${tipo === "servicio" ? "servicios" : "productos"}/${slugify(
+              name
+            )}/`;
       const name = it.nombre || (tipo === "servicio" ? "Servicio" : "Producto");
       card.innerHTML = `
         <div class="card-header">

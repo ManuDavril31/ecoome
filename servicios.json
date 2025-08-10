@@ -4,13 +4,13 @@
     "precio": "$300.000",
     "descripcion": "Diagnóstico, mantenimiento y reparación de equipos.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055679.png",
-    "url": "servicio-reparacion-pc.html"
+    "url": "servicios/reparacion-de-pc/"
   },
   {
     "nombre": "Instalación de software",
     "precio": "$100.000",
     "descripcion": "Instalación y configuración de sistemas y programas.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055673.png",
-    "url": "servicio-instalacion-software.html"
+    "url": "servicios/instalacion-de-software/"
   }
 ]
