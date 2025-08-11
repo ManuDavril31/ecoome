@@ -211,7 +211,7 @@ function businessTemplate(b) {
     "@type": "LocalBusiness",
     name: b.nombre,
     description: b.descripcion || undefined,
-    image: b.logo || b.imagen || undefined,
+    image: b.icono || b.logo || b.imagen || undefined,
     url: `${SITE_URL}${pagePath}`,
     address: b.direccion
       ? { "@type": "PostalAddress", streetAddress: b.direccion }
@@ -272,10 +272,12 @@ function businessTemplate(b) {
     <div class="detail-main">
       <header class="detail-header">
         ${
-          b.logo || b.imagen
-            ? `<img class=\"detail-icon\" src=\"${b.logo || b.imagen}\" alt=\"${
+          b.icono || b.logo || b.imagen
+            ? `<img class="detail-icon" src="${
+                b.icono || b.logo || b.imagen
+              }" alt="${
                 b.nombre
-              }\" width=\"72\" height=\"72\" loading=\"lazy\" decoding=\"async\">`
+              }" width="72" height="72" loading="lazy" decoding="async">`
             : ""
         }
         <div>
@@ -302,7 +304,7 @@ function businessTemplate(b) {
     path: pagePath,
     extraHead,
     ogType: "business",
-    image: b.logo || b.imagen || undefined,
+    image: b.icono || b.logo || b.imagen || undefined,
   });
 }
 
