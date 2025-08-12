@@ -206,17 +206,31 @@ function businessTemplate(b) {
     ["Teléfono", b.telefono],
     ["Horario", b.horario],
     ["Descripción", b.descripcion],
-    ["Sitio", b.url],
+    ["Sitio web", b.sitio],
     ["WhatsApp", b.whatsapp],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")
-    .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`)
+    .map(([k, v]) => {
+      let val = v;
+      if (
+        k === "Sitio web" &&
+        typeof v === "string" &&
+        /^https?:\/\//i.test(v.trim())
+      ) {
+        const url = v.trim();
+        val = `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+      }
+      return `<dt>${k}</dt><dd>${val}</dd>`;
+    })
     .join("");
 
   const seoHtml = b.seo_md
     ? `<section class="seo-content container">${mdToHtml(b.seo_md)}</section>`
     : "";
 
+  const sameAs = [];
+  if (b.sitio) sameAs.push(b.sitio);
+  if (b.whatsapp) sameAs.push(b.whatsapp);
   const ldBiz = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -229,7 +243,7 @@ function businessTemplate(b) {
       : undefined,
     telephone: b.telefono || undefined,
     openingHours: b.horario || undefined,
-    sameAs: b.whatsapp ? [b.whatsapp] : undefined,
+    sameAs: sameAs.length ? sameAs : undefined,
   };
   const ldBreadcrumbs = {
     "@context": "https://schema.org",
@@ -410,7 +424,6 @@ function productTemplate(p) {
     ["Precio", p.precio],
     ["Descripción", p.descripcion],
     ["Imagen", p.imagen],
-    ["URL", p.url],
     ["WhatsApp", p.whatsapp],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")
@@ -546,7 +559,6 @@ function serviceTemplate(s) {
     ["Precio", s.precio],
     ["Descripción", s.descripcion],
     ["Imagen", s.imagen],
-    ["URL", s.url],
     ["WhatsApp", s.whatsapp],
   ]
     .filter(([, v]) => v && String(v).trim() !== "")

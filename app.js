@@ -107,6 +107,7 @@ function slugify(str) {
         direccion: biz.direccion || biz.address || "",
         whatsapp: biz.whatsapp || biz.wa || "",
         horario: biz.horario || biz.openingHours || "",
+        sitio: biz.sitio || biz.website || "",
         url: biz.url || biz.info || "#",
       }));
     }
@@ -128,6 +129,7 @@ function slugify(str) {
             telefono: r.telefono,
             whatsapp: r.whatsapp,
             horario: r.horario,
+            sitio: r.sitio,
             url: r.url,
             icono: r.icono,
           }));
