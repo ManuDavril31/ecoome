@@ -5,6 +5,7 @@
     "descripcion": "Portátil 8GB RAM, 512GB SSD, ideal para estudio y trabajo.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055687.png",
     "url": "productos/laptop/",
+    "whatsapp": "",
     "seo_md": "# Laptop 8GB/512GB SSD\n\nEquipo delgado con excelente autonomía para clases y oficina.\n\n## Especificaciones\n- Pantalla 15.6\" Full HD\n- Procesador de 4 núcleos\n- SSD NVMe 512 GB\n- Windows 11\n\n> Recomendado para estudiantes y profesionales."
   },
   {
@@ -13,6 +14,7 @@
     "descripcion": "Celular gama media con gran cámara y batería.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png",
     "url": "productos/smartphone/",
+    "whatsapp": "",
     "seo_md": "# Smartphone gama media\n\nCámara de **50MP**, batería de larga duración y carga rápida.\n\n- Pantalla 6.5\" 90Hz\n- 6GB RAM / 128GB almacenamiento\n- Doble SIM"
   },
   {
@@ -21,6 +23,7 @@
     "descripcion": "Auriculares inalámbricos con cancelación de ruido.",
     "imagen": "https://cdn-icons-png.flaticon.com/512/1055/1055676.png",
     "url": "productos/auriculares/",
+    "whatsapp": "",
     "seo_md": "# Auriculares inalámbricos\n\nCon Bluetooth 5.2, estuche de carga y resistencia al sudor.\n\n| Modo | Duración |\n|---|---|\n| Reproducción | 6 h |\n| Estuche | +18 h |"
   }
 ]

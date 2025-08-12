@@ -1,0 +1,37 @@
+[
+  {
+    "nombre": "Talleres",
+    "slug": "talleres",
+    "icono": "https://cdn-icons-png.flaticon.com/512/679/679720.png"
+  },
+  {
+    "nombre": "Restaurantes",
+    "slug": "restaurantes",
+    "icono": "https://cdn-icons-png.flaticon.com/512/857/857681.png"
+  },
+  {
+    "nombre": "Hoteles",
+    "slug": "hoteles",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3171/3171919.png"
+  },
+  {
+    "nombre": "Tecnología",
+    "slug": "tecnologia",
+    "icono": "https://cdn-icons-png.flaticon.com/512/2921/2921822.png"
+  },
+  {
+    "nombre": "Servicios",
+    "slug": "servicios",
+    "icono": "https://cdn-icons-png.flaticon.com/512/2331/2331970.png"
+  },
+  {
+    "nombre": "Construcción",
+    "slug": "construccion",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3534/3534067.png"
+  },
+  {
+    "nombre": "Artesanías",
+    "slug": "artesanias",
+    "icono": "https://cdn-icons-png.flaticon.com/512/3534/3534067.png"
+  }
+]
