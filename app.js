@@ -75,7 +75,8 @@ function slugify(str) {
   const dirStatus = $("#dir-status");
   const btnBuscar = $("#btn-buscar");
   const btnLimpiar = $("#btn-limpiar");
-  const pills = $$(".filters .pill");
+  // Contenedor de filtros (pills) - ahora las categorías se cargan dinámicamente
+  const filtersContainer = $(".filters");
 
   const normalize = (s) =>
     (s || "")
@@ -196,8 +197,8 @@ function slugify(str) {
     activeCategory = cat || "";
     // sincroniza select
     if (categoria) categoria.value = activeCategory;
-    // sincroniza pills
-    pills.forEach((p) => {
+    // sincroniza pills (consultar dinámicamente porque se generan luego)
+    $$(".filters .pill").forEach((p) => {
       p.classList.toggle(
         "active",
         normalize(p.dataset.filter) === normalize(activeCategory) &&
@@ -246,14 +247,16 @@ function slugify(str) {
     } catch (_) {}
   }
 
-  // Eventos
-  pills.forEach((p) =>
-    p.addEventListener("click", () => {
-      const cat = p.dataset.filter || "";
+  // Eventos - delegación para pills creadas dinámicamente
+  if (filtersContainer) {
+    filtersContainer.addEventListener("click", (e) => {
+      const pill = e.target.closest(".pill");
+      if (!pill || !filtersContainer.contains(pill)) return;
+      const cat = pill.dataset.filter || "";
       setActiveCategory(cat);
       applyFilters();
-    })
-  );
+    });
+  }
 
   if (categoria) {
     categoria.addEventListener("change", () => {

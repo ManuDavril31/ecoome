@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>http://localhost/</loc></url>
   <url><loc>http://localhost/index.html</loc></url>
-  <url><loc>http://localhost/directorio/talleres/taller-automotriz-centro-campero/</loc></url>
+  <url><loc>http://localhost/directorio/artesanias/sixta-artesanias/</loc></url>
   <url><loc>http://localhost/directorio/tecnologia/soporte-e-instalacion-de-software/</loc></url>
   <url><loc>http://localhost/directorio/hoteles/hotel-san-jose-plaza/</loc></url>
   <url><loc>http://localhost/directorio/restaurantes/restaurante-el-bocachico-sinuano/</loc></url>
@@ -11,6 +11,13 @@
   <url><loc>http://localhost/directorio/tecnologia/techzone-monteria/</loc></url>
   <url><loc>http://localhost/directorio/servicios/clinica-veterinaria-monteria/</loc></url>
   <url><loc>http://localhost/directorio/restaurantes/la-parrilla-del-rio/</loc></url>
+  <url><loc>http://localhost/directorio/artesanias/</loc></url>
+  <url><loc>http://localhost/directorio/tecnologia/</loc></url>
+  <url><loc>http://localhost/directorio/hoteles/</loc></url>
+  <url><loc>http://localhost/directorio/restaurantes/</loc></url>
+  <url><loc>http://localhost/directorio/servicios/</loc></url>
+  <url><loc>http://localhost/directorio/construccion/</loc></url>
+  <url><loc>http://localhost/directorio/</loc></url>
   <url><loc>http://localhost/productos/laptop/</loc></url>
   <url><loc>http://localhost/productos/smartphone/</loc></url>
   <url><loc>http://localhost/productos/auriculares/</loc></url>

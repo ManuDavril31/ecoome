@@ -185,8 +185,18 @@ function businessTemplate(b) {
   const desc = `${b.nombre} en ${b.categoria || "Negocio"}. Dirección: ${
     b.direccion || ""
   }. Tel: ${b.telefono || ""}.`;
-  const catSlug = slugify(b.categoria || "otros");
-  const slug = slugify(b.nombre);
+  let catSlug = slugify(b.categoria || "otros");
+  let slug = slugify(b.nombre);
+  // Si b.url proporciona /directorio/<cat>/<slug>/, úsalo para estabilidad de URLs
+  if (b.url && typeof b.url === "string") {
+    const idx = b.url.indexOf("directorio/");
+    if (idx !== -1) {
+      const rest = b.url.slice(idx + "directorio/".length);
+      const parts = rest.split(/[\/#?]/).filter(Boolean);
+      if (parts[0]) catSlug = slugify(parts[0]);
+      if (parts[1]) slug = slugify(parts[1]);
+    }
+  }
   const pagePath = `/directorio/${catSlug}/${slug}/`;
 
   const detailsRows = [
@@ -305,6 +315,85 @@ function businessTemplate(b) {
     extraHead,
     ogType: "business",
     image: b.icono || b.logo || b.imagen || undefined,
+  });
+}
+
+function categoryIndexTemplate(catName, catSlug, items) {
+  const title = `Directorio de ${catName} en Montería`;
+  const desc = `Negocios de ${catName} en Montería: contactos, dirección y WhatsApp.`;
+  const listHtml = items
+    .map((b) => {
+      let urlPath = `/directorio/${catSlug}/${slugify(b.nombre)}/`;
+      if (b.url && typeof b.url === "string") {
+        const idx = b.url.indexOf("directorio/");
+        if (idx !== -1) {
+          const rest = b.url.slice(idx + "directorio/".length);
+          const parts = rest.split(/[\/#?]/).filter(Boolean);
+          if (parts[0] && parts[1]) {
+            urlPath = `/directorio/${slugify(parts[0])}/${slugify(parts[1])}/`;
+          }
+        }
+      }
+      return `<li><a href="${urlPath}">${b.nombre}</a>${
+        b.direccion ? ` — <small>${b.direccion}</small>` : ""
+      }</li>`;
+    })
+    .join("\n");
+
+  const body = `
+<nav class="breadcrumbs">
+  <a href="/">Inicio</a> / <span>${catName}</span>
+</nav>
+<section>
+  <h1 class="section-title">${catName}</h1>
+  <ul class="list-simple">
+    ${listHtml}
+  </ul>
+  <p><a class="btn-info" href="/index.html#directorio">Volver al directorio</a></p>
+</section>`;
+
+  return baseHtml({
+    title,
+    description: desc,
+    body,
+    path: `/directorio/${catSlug}/`,
+    ogType: "website",
+  });
+}
+
+function directoryIndexTemplate(categories) {
+  const title = `Directorio de categorías en Montería`;
+  const desc = `Explora negocios por categoría en Montería: contacto, dirección y WhatsApp.`;
+  const listHtml = categories
+    .map((c) => {
+      const href = `/directorio/${c.slug}/`;
+      const icon = c.icono
+        ? `<img src="${c.icono}" alt="${c.nombre}" width="28" height="28" loading="lazy" decoding="async" /> `
+        : "";
+      const count =
+        typeof c.count === "number" ? ` <small>(${c.count})</small>` : "";
+      return `<li class="cat-item">${icon}<a href="${href}">${c.nombre}</a>${count}</li>`;
+    })
+    .join("\n");
+
+  const body = `
+<nav class="breadcrumbs">
+  <a href="/">Inicio</a> / <span>Directorio</span>
+</nav>
+<section>
+  <h1 class="section-title">Directorio por categorías</h1>
+  <ul class="list-simple cats">
+    ${listHtml}
+  </ul>
+  <p><a class="btn-info" href="/index.html#directorio">Volver</a></p>
+</section>`;
+
+  return baseHtml({
+    title,
+    description: desc,
+    body,
+    path: `/directorio/`,
+    ogType: "website",
   });
 }
 
@@ -577,17 +666,72 @@ function generateAll() {
   const negocios = readJson("negocios.json");
   const productos = readJson("productos.json");
   const servicios = readJson("servicios.json");
+  const categorias = readJson("categorias.json");
   const urls = [`${SITE_URL}/`, `${SITE_URL}/index.html`];
 
   // Directorio por categoría (silo)
+  const byCat = new Map();
   for (const b of negocios) {
-    const cat = slugify(b.categoria || "otros");
-    const slug = slugify(b.nombre);
+    // Derivar cat/slug, respetando b.url si provee estructura
+    let cat = slugify(b.categoria || "otros");
+    let slug = slugify(b.nombre);
+    if (b.url && typeof b.url === "string") {
+      const idx = b.url.indexOf("directorio/");
+      if (idx !== -1) {
+        const rest = b.url.slice(idx + "directorio/".length);
+        const parts = rest.split(/[\/#?]/).filter(Boolean);
+        if (parts[0]) cat = slugify(parts[0]);
+        if (parts[1]) slug = slugify(parts[1]);
+      }
+    }
     const dir = path.join(root, "directorio", cat, slug);
     const file = path.join(dir, "index.html");
-    writeFileSafe(file, businessTemplate(b));
+    writeFileSafe(
+      file,
+      businessTemplate({
+        ...b,
+        categoria: b.categoria,
+        url: `/directorio/${cat}/${slug}/`,
+      })
+    );
     urls.push(`${SITE_URL}/directorio/${cat}/${slug}/`);
+    // Agrupar por categoría para crear índice
+    if (!byCat.has(cat)) byCat.set(cat, []);
+    byCat.get(cat).push(b);
   }
+
+  // Índices por categoría
+  for (const [catSlug, items] of byCat.entries()) {
+    const catName = items[0]?.categoria || catSlug;
+    const dir = path.join(root, "directorio", catSlug);
+    writeFileSafe(
+      path.join(dir, "index.html"),
+      categoryIndexTemplate(catName, catSlug, items)
+    );
+    urls.push(`${SITE_URL}/directorio/${catSlug}/`);
+  }
+
+  // Índice general del directorio
+  const counts = {};
+  for (const [catSlug, items] of byCat.entries())
+    counts[catSlug] = items.length;
+  const catsForIndex = (
+    Array.isArray(categorias) && categorias.length
+      ? categorias.map((c) => ({
+          nombre: c.nombre || c.name || "Otros",
+          slug: c.slug
+            ? slugify(c.slug)
+            : slugify(c.nombre || c.name || "otros"),
+          icono: c.icono || c.icon || undefined,
+        }))
+      : Array.from(byCat.keys()).map((slug) => ({ nombre: slug, slug }))
+  ).map((c) => ({ ...c, count: counts[c.slug] || 0 }));
+  const dirRoot = path.join(root, "directorio");
+  writeFileSafe(
+    path.join(dirRoot, "index.html"),
+    directoryIndexTemplate(catsForIndex)
+  );
+  urls.push(`${SITE_URL}/directorio/`);
 
   // Productos
   for (const p of productos) {

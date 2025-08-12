@@ -10,19 +10,11 @@
       name="description"
       content="Encuentra talleres, restaurantes, hoteles, tecnología y servicios en Montería, Córdoba. Directorio local con WhatsApp, horarios y ubicación."
     />
-    <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://monteriavende.com/" />
-    <link
-      rel="icon"
-      href="https://cdn-icons-png.flaticon.com/512/535/535239.png"
-      sizes="any"
-    />
+    rel="icon" href="https://cdn-icons-png.flaticon.com/512/535/535239.png"
+    sizes="any" />
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Montería Vende | Marketplace y directorio local en Montería, Córdoba"
-    />
-    <meta
       property="og:description"
       content="Encuentra talleres, restaurantes, hoteles, tecnología y servicios en Montería, Córdoba. Directorio local con WhatsApp, horarios y ubicación."
     />
@@ -112,12 +104,6 @@
           />
           <select id="categoria" aria-label="Categoría">
             <option value="">Todas las categorías</option>
-            <option>Talleres</option>
-            <option>Restaurantes</option>
-            <option>Hoteles</option>
-            <option>Tecnología</option>
-            <option>Servicios</option>
-            <option>Construcción</option>
           </select>
           <button id="btn-buscar" type="button">Buscar</button>
           <button
@@ -129,14 +115,11 @@
             Limpiar
           </button>
         </div>
-        <div class="filters" aria-label="Filtros rápidos">
-          <span class="pill" data-filter="Talleres">Talleres</span>
-          <span class="pill" data-filter="Restaurantes">Restaurantes</span>
-          <span class="pill" data-filter="Hoteles">Hoteles</span>
-          <span class="pill" data-filter="Tecnología">Tecnología</span>
-          <span class="pill" data-filter="Servicios">Servicios</span>
-          <span class="pill" data-filter="Construcción">Construcción</span>
-        </div>
+        <div
+          class="filters"
+          aria-label="Filtros rápidos"
+          id="filtros-categorias"
+        ></div>
         <div
           id="dir-status"
           class="dir-status"
@@ -493,6 +476,14 @@
               </div>
             </div>
           </article>
+        </div>
+        <div style="text-align: center; margin: 0.75rem 0 1rem">
+          <a
+            class="btn-main"
+            href="/directorio/"
+            style="display: inline-block; margin: 0.5rem 0"
+            >Ver directorio completo</a
+          >
         </div>
         <div class="pagination" aria-label="Paginación">
           <span class="page">1</span>
@@ -1010,5 +1001,37 @@
       })();
     </script>
     <script src="app.js"></script>
+    <script>
+      // Carga dinámica de categorías en select y pills
+      (async function () {
+        try {
+          const res = await fetch("categorias.json", { cache: "no-store" });
+          const categorias = await res.json();
+          const select = document.getElementById("categoria");
+          const cont = document.getElementById("filtros-categorias");
+          if (Array.isArray(categorias)) {
+            categorias.forEach((cat) => {
+              // option
+              if (select) {
+                const opt = document.createElement("option");
+                opt.value = cat.nombre;
+                opt.textContent = cat.nombre;
+                select.appendChild(opt);
+              }
+              // pill
+              if (cont) {
+                const span = document.createElement("span");
+                span.className = "pill";
+                span.dataset.filter = cat.nombre;
+                span.textContent = cat.nombre;
+                cont.appendChild(span);
+              }
+            });
+          }
+        } catch (e) {
+          console.warn("No se pudieron cargar las categorías", e);
+        }
+      })();
+    </script>
   </body>
 </html>
