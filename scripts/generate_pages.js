@@ -204,6 +204,7 @@ function businessTemplate(b) {
     ["Categoría", b.categoria],
     ["Dirección", b.direccion],
     ["Teléfono", b.telefono],
+    ["Horario", b.horario],
     ["Descripción", b.descripcion],
     ["Sitio", b.url],
     ["WhatsApp", b.whatsapp],
@@ -227,6 +228,7 @@ function businessTemplate(b) {
       ? { "@type": "PostalAddress", streetAddress: b.direccion }
       : undefined,
     telephone: b.telefono || undefined,
+    openingHours: b.horario || undefined,
     sameAs: b.whatsapp ? [b.whatsapp] : undefined,
   };
   const ldBreadcrumbs = {
@@ -686,14 +688,7 @@ function generateAll() {
     }
     const dir = path.join(root, "directorio", cat, slug);
     const file = path.join(dir, "index.html");
-    writeFileSafe(
-      file,
-      businessTemplate({
-        ...b,
-        categoria: b.categoria,
-        url: `/directorio/${cat}/${slug}/`,
-      })
-    );
+    writeFileSafe(file, businessTemplate({ ...b, categoria: b.categoria }));
     urls.push(`${SITE_URL}/directorio/${cat}/${slug}/`);
     // Agrupar por categoría para crear índice
     if (!byCat.has(cat)) byCat.set(cat, []);

@@ -106,6 +106,7 @@ function slugify(str) {
         telefono: biz.telefono || biz.tel || "",
         direccion: biz.direccion || biz.address || "",
         whatsapp: biz.whatsapp || biz.wa || "",
+        horario: biz.horario || biz.openingHours || "",
         url: biz.url || biz.info || "#",
       }));
     }
@@ -126,6 +127,7 @@ function slugify(str) {
             direccion: r.direccion,
             telefono: r.telefono,
             whatsapp: r.whatsapp,
+            horario: r.horario,
             url: r.url,
             icono: r.icono,
           }));
@@ -146,6 +148,7 @@ function slugify(str) {
         const tel = biz.telefono;
         const addr = biz.direccion;
         const wa = biz.whatsapp;
+        const horario = biz.horario;
         const catSlug = slugify(cat);
         const titleSlug = slugify(title);
         const urlInfo =
@@ -166,10 +169,7 @@ function slugify(str) {
               <h3 class="biz-title">${title}</h3>
               <span class="pill-cat">${cat}</span>
             </div>
-            <div class="biz-sub">
-              <span class="biz-rating">★★★★★ <span class="count">4.6</span></span>
-              <span class="open-now">Abierto ahora</span>
-            </div>
+      ${horario ? `<p class="biz-meta">Horario: ${horario}</p>` : ""}
             ${addr ? `<p class="biz-meta">${addr}</p>` : ""}
             ${tel ? `<p class="biz-meta">Tel: ${tel}</p>` : ""}
             <div class="biz-actions">
